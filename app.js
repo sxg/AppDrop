@@ -9,8 +9,6 @@ var PORT = process.env.PORT || 5000;
 //    Setup
 var app = express();
 app.use(bodyParser());
-
-//    Register routes
 app.use(router);
 
 //    Start the server
