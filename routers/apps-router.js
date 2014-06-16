@@ -21,5 +21,16 @@ appsRouter.route(API_PREFIX + '/apps')
     });
 });
 
+appsRouter.route(API_PREFIX + '/apps/:bundle_identifier')
+.get(function(req, res) {
+    app.getApp(req.params.bundle_identifier, function(err, app) {
+        if (err) {
+            res.send(500, {'error': err});
+        } else {
+            res.json(app);
+        }
+    });
+});
+
 //    Public
 module.exports = appsRouter;

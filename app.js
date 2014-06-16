@@ -10,10 +10,6 @@ var PORT = process.env.PORT;
 var app = express();
 app.use(bodyParser());
 app.use(appsRouter);
-// app.use(function(req, res, next) {
-//     console.log(req.host + req.path);
-//     next();
-// });
 
 //    Start the server
 app.listen(PORT, function() {
