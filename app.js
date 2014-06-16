@@ -1,15 +1,19 @@
 //    Dependencies
 var express = require('express');
 var bodyParser = require('body-parser');
-var router = require('./router');
+var appsRouter = require('./routers/apps-router');
 
 //    Constants
-var PORT = process.env.PORT || 5000;
+var PORT = process.env.PORT;
 
 //    Setup
 var app = express();
 app.use(bodyParser());
-app.use(router);
+app.use(appsRouter);
+// app.use(function(req, res, next) {
+//     console.log(req.host + req.path);
+//     next();
+// });
 
 //    Start the server
 app.listen(PORT, function() {
