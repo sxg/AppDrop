@@ -2,16 +2,19 @@
 var db = require('../db/db');
 
 //    app:
-//        required: name, bundleID
-//        optional: accountID
+//        required: name, bundle_identifier
+//        optional: private, password_hash
+//        optional: account_id
 //    cb(err, createdApp)
-var createPublicApp = function(app, cb) {
+var createApp = function(app, cb) {
+    //    Check for required values
     if (!app.name) {
         cb('Error: app requires a name');
-    } else if (!app.bundleID) {
+    } else if (!app.bundle_identifier) {
         cb('Error: app requires a bundle identifier');
     } else {
         db.getClient(function(err, client, done) {
+            //    Callback after creating the app
             var insertCB = function(err, results) {
                 done();
                 if (err) {
@@ -21,11 +24,9 @@ var createPublicApp = function(app, cb) {
                 }
             };
 
-            if (!app.accountID) {
-                client.query('INSERT INTO app(name, bundle_identifier, uuid) VALUES($1, $2, uuid_generate_v4()) RETURNING uuid', [app.name, app.bundleID], insertCB);
-            } else {
-                client.query('INSERT INTO app(name, bundle_identifier, account_id, uuid) VALUES($1, $2, $3, uuid_generate_v4()) RETURNING uuid', [app.name, app.bundleID, app.accountID], insertCB);
-            }
+            //    Create the new app
+            var q = db.app.insert(app).returning('bundle_identifier', 'name', 'uuid', 'account_id').toQuery();
+            client.query(q.text, q.values, insertCB);
         });
     }
 };

@@ -12,7 +12,7 @@ var appsRouter = express.Router();
 //    Routes
 appsRouter.route(API_PREFIX + '/apps')
 .post(function(req, res) {
-    app.createPublicApp(req.body, function(err, app) {
+    app.createApp(req.body, function(err, app) {
         if (err) {
             res.send(500, {'error': err});
         } else {
