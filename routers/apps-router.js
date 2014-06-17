@@ -4,13 +4,17 @@ var app = require('../models/app');
 
 //    Constants
 var DATABASE_URL = process.env.DATABASE_URL;
-var API_PREFIX = '/api/v1';
+var API_V1 = '/api/v1';
 
 //    Setup
 var appsRouter = express.Router();
 
+//===========
 //    Routes
-appsRouter.route(API_PREFIX + '/apps')
+//===========
+
+//    /api/v1/apps
+appsRouter.route(API_V1 + '/apps')
 .get(function(req, res) {
     app.getAllApps(function(err, apps) {
         if (err) {
@@ -30,7 +34,8 @@ appsRouter.route(API_PREFIX + '/apps')
     });
 });
 
-appsRouter.route(API_PREFIX + '/apps/:bundle_identifier')
+//    /api/v1/apps/:bundle_identifier
+appsRouter.route(API_V1 + '/apps/:bundle_identifier')
 .get(function(req, res) {
     app.getApp(req.params.bundle_identifier, function(err, app) {
         if (err) {
