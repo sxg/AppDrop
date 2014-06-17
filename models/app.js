@@ -66,9 +66,10 @@ var getApp = function(bundle_identifier, cb) {
                 done();
                 if (err) {
                     cb('Error getting app: ' + err);
+                } else if (results.rows.length === 0) {
+                    cb('Error getting app: no app with bundle identifier ' + bundle_identifier + ' exists');
                 } else {
-                    //    If no app is found, just return an empty object
-                    cb(null, results.rows[0] || {});
+                    cb(null, results.rows[0]);
                 }
             });
         });
