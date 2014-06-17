@@ -34,14 +34,32 @@ appsRouter.route(API_V1 + '/apps')
     });
 });
 
-//    /api/v1/apps/:bundle_identifier
-appsRouter.route(API_V1 + '/apps/:bundle_identifier')
+//    /api/v1/apps/:app_id
+appsRouter.route(API_V1 + '/apps/:app_id')
 .get(function(req, res) {
-    app.getApp(req.params.bundle_identifier, function(err, app) {
+    app.getApp(req.params.app_id, function(err, app) {
         if (err) {
             res.send(500, {'error': err});
         } else {
             res.json(app);
+        }
+    });
+})
+.put(function(req, res) {
+    app.updateApp(req.params.app_id, req.body, function(err, app) {
+        if (err) {
+            res.send(500, {'error': err});
+        } else {
+            res.json(app);
+        }
+    });
+})
+.delete(function(req, res) {
+    app.deleteApp(req.params.app_id, function(err) {
+        if (err) {
+            res.send(500, {'error': err});
+        } else {
+            res.send(204);
         }
     });
 });
