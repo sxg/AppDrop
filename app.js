@@ -11,7 +11,11 @@ var app = express();
 app.use(bodyParser());
 app.use(appsRouter);
 
+
+//=====================
 //    Start the server
+//=====================
+
 app.listen(PORT, function() {
     console.log("Listening on port " + PORT + "...");
 });
