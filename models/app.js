@@ -67,7 +67,8 @@ var getApp = function(bundle_identifier, cb) {
                 if (err) {
                     cb('Error getting app: ' + err);
                 } else {
-                    cb(null, results.rows[0]);
+                    //    If no app is found, just return an empty object
+                    cb(null, results.rows[0] || {});
                 }
             });
         });
