@@ -1,61 +1,61 @@
 //    Dependencies
 var express = require('express');
-var app = require('../models/app');
+var account = require('../models/account');
 
 //    Constants
 var API_V1 = '/api/v1';
 
 //    Setup
-var appsRouter = express.Router();
+var accountsRouter = express.Router();
 
 
 //===========
 //    Routes
 //===========
 
-//    /api/v1/apps
-appsRouter.route(API_V1 + '/apps')
+//    /api/v1/accounts
+accountsRouter.route(API_V1 + '/accounts')
 .get(function(req, res) {
-    app.getAllApps(function(err, apps) {
+    account.getAllAccounts(function(err, accounts) {
         if (err) {
             res.send(500, {'error': err});
         } else {
-            res.json(apps);
+            res.json(accounts);
         }
     });
 })
 .post(function(req, res) {
-    app.createApp(req.body, function(err, app) {
+    account.createAccount(req.body, function(err, account) {
         if (err) {
             res.send(500, {'error': err});
         } else {
-            res.json(app);
+            res.json(account);
         }
     });
 });
 
-//    /api/v1/apps/:app_id
-appsRouter.route(API_V1 + '/apps/:app_id')
-.get(function(req, res) {
-    app.getApp(req.params.app_id, function(err, app) {
+//    /api/v1/accounts/:account_id
+accountsRouter.route(API_V1 + '/accounts/:account_id')
+.get(function(req ,res) {
+    account.getAccount(req.params.account_id, function(err, account) {
         if (err) {
             res.send(500, {'error': err});
         } else {
-            res.json(app);
+            res.json(account);
         }
     });
 })
 .put(function(req, res) {
-    app.updateApp(req.params.app_id, req.body, function(err, app) {
+    account.updateAccount(req.params.account_id, req.body, function(err, account) {
         if (err) {
             res.send(500, {'error': err});
         } else {
-            res.json(app);
+            res.json(account);
         }
     });
 })
 .delete(function(req, res) {
-    app.deleteApp(req.params.app_id, function(err) {
+    account.deleteAccount(req.params.account_id, function(err) {
         if (err) {
             res.send(500, {'error': err});
         } else {
@@ -65,4 +65,4 @@ appsRouter.route(API_V1 + '/apps/:app_id')
 });
 
 //    Public
-module.exports = appsRouter;
+module.exports = accountsRouter;

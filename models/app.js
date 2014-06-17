@@ -91,7 +91,7 @@ var updateApp = function(app_id, app, cb) {
             client.query(q.text, q.values, function(err, results) {
                 done();
                 if (err) {
-                    cb('Error creating app: ' + err);
+                    cb('Error updating app: ' + err);
                 } else {
                     cb(null, results.rows[0]);
                 }
@@ -115,7 +115,7 @@ var deleteApp = function(app_id, cb) {
             client.query(q.text, q.values, function(err) {
                 done();
                 if (err) {
-                    cb('Error getting app: ' + err);
+                    cb('Error deleting app: ' + err);
                 } else {
                     cb(null);
                 }
