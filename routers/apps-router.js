@@ -11,6 +11,15 @@ var appsRouter = express.Router();
 
 //    Routes
 appsRouter.route(API_PREFIX + '/apps')
+.get(function(req, res) {
+    app.getAllApps(function(err, apps) {
+        if (err) {
+            res.send(500, {'error': err});
+        } else {
+            res.json(apps);
+        }
+    });
+})
 .post(function(req, res) {
     app.createApp(req.body, function(err, app) {
         if (err) {

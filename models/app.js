@@ -1,6 +1,9 @@
 //    Dependencies
 var db = require('../db/db');
 
+//    Constants
+var LIMIT = 1000;
+
 //    app:
 //        required: name, bundle_identifier
 //        optional: private, password_hash
@@ -28,7 +31,26 @@ var createApp = function(app, cb) {
     }
 };
 
-//    cb(err, createdApp)
+//    cb(err, apps)
+var getAllApps = function(cb) {
+    db.getClient(function(client, done) {
+        //    Get apps
+        var q = db.app.select('bundle_identifier', 'name', 'uuid', 'account_id')
+                      .from(db.app)
+                      .limit(LIMIT)
+                      .toQuery();
+        client.query(q.text, q.values, function(err, results) {
+            done();
+            if (err) {
+                cb('Error getting apps: ' + err);
+            } else {
+                cb(null, results.rows);
+            }
+        });
+    });
+};
+
+//    cb(err, app)
 var getApp = function(bundle_identifier, cb) {
     //    Make sure there is a bundle ID
     if (!bundle_identifier) {
@@ -57,5 +79,6 @@ var getApp = function(bundle_identifier, cb) {
 //    Public
 module.exports = {
     createApp: createApp,
-    getApp: getApp
+    getApp: getApp,
+    getAllApps: getAllApps
 };
