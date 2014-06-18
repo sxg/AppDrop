@@ -18,7 +18,7 @@ accountsRouter.route(API_V1 + '/accounts')
 .get(function(req, res) {
     account.getAllAccounts(function(err, accounts) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.json(accounts);
         }
@@ -27,7 +27,7 @@ accountsRouter.route(API_V1 + '/accounts')
 .post(function(req, res) {
     account.createAccount(req.body, function(err, account) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.json(account);
         }
@@ -39,7 +39,7 @@ accountsRouter.route(API_V1 + '/accounts/:account_id')
 .get(function(req ,res) {
     account.getAccount(req.params.account_id, function(err, account) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.json(account);
         }
@@ -48,7 +48,7 @@ accountsRouter.route(API_V1 + '/accounts/:account_id')
 .put(function(req, res) {
     account.updateAccount(req.params.account_id, req.body, function(err, account) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.json(account);
         }
@@ -57,7 +57,7 @@ accountsRouter.route(API_V1 + '/accounts/:account_id')
 .delete(function(req, res) {
     account.deleteAccount(req.params.account_id, function(err) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.send(204);
         }

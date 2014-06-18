@@ -17,7 +17,7 @@ buildsRouter.route(API_V1 + '/builds')
 .post(function(req, res) {
     build.createBuild(req.body, function(err, build) {
         if (err) {
-            res.send(500, {'error': err});
+            res.send(err.httpStatusCode || 500, err);
         } else {
             res.json(build);
         }

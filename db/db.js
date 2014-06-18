@@ -25,7 +25,9 @@ var account = sql.define({
 var getClient = function(cb) {
     pg.connect(DATABASE_URL, function(err, client, done) {
         if (err) {
-            cb('Error: couldn\'t fetch client from client pool:' + err);
+            err.name = 'GatewayTimeoutError';
+            err.httpStatusCode = 504;
+            cb(err);
         } else {
             cb(null, client, done);
         }
