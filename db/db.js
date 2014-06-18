@@ -39,7 +39,7 @@ var getClient = function(cb) {
 var create = function(table, object, returningColumns, cb) {
     //    Check paramters
     assert.ok(table, 'table must be non null');
-    assert.ok(object, 'object must be non null Object');
+    assert.ok(object, 'object must be non null');
     assert.ok(returningColumns instanceof Array, 'returningColumns must must be an Array');
     assert.ok(cb instanceof Function, 'cb must be a Function');
 
@@ -70,11 +70,42 @@ var create = function(table, object, returningColumns, cb) {
     });
 };
 
+var updateOne = function(table, column, value, object, returningColumns, cb) {
+    //    Check parameters
+    assert.ok(table, 'table must be non null');
+    assert.ok(column, 'column must be non null');
+    assert.ok(/\w*_id/, 'column must be an id'); // id columns are unique, ensuring only one row gets updated
+    assert.ok(value, 'value must be non null');
+    assert.ok(object, 'must be non null');
+    assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
+    assert.ok(cb instanceof Function, 'cb must be a Function');
+
+    getClient(function(err, client, done) {
+        if (err) {
+            cb(err);
+        } else {
+            //    Update the object in the database
+            var q = table.update(object)
+                         .where(column.equals(value))
+                         .returning(returningColumns)
+                         .toQuery();
+            client.query(q.text, q.values, function(err, results) {
+                done();
+                if (err) {
+                    cb(err);
+                } else {
+                    cb(null, results.rows[0]);
+                }
+            });
+        }
+    });
+};
+
 var destroyOne = function(table, column, value, returningColumns, cb) {
     //    Check paramters
     assert.ok(table, 'table must be non null');
     assert.ok(column, 'column must be non null');
-    assert.ok(/\w*_id/, 'column must be an id');    // id columns are unique, ensuring only one row gets deleted
+    assert.ok(/\w*_id/, 'column must be an id'); // id columns are unique, ensuring only one row gets deleted
     assert.ok(value, 'value must be non null');
     assert.ok(cb instanceof Function, 'cb must be a Function');
 
@@ -112,5 +143,6 @@ module.exports = {
     account: account,
     getClient: getClient,
     create: create,
-    destroyOne: destroyOne
+    destroyOne: destroyOne,
+    updateOne: updateOne
 };

@@ -81,23 +81,11 @@ var updateApp = function(app_id, app, cb) {
     //    Make sure there is an app ID
     assert.equal(typeof app_id, 'string', 'app_id must be a string');
 
-    db.getClient(function(err, client, done) {
+    db.updateOne(db.app, db.app.app_id, app_id, app, PUBLIC_COLUMNS, function(err, app) {
         if (err) {
             cb(err);
         } else {
-            //    Update the app by app ID
-            var q = db.app.update(app)
-                          .where(db.app.app_id.equals(app_id))
-                          .returning(PUBLIC_COLUMNS)
-                          .toQuery();
-            client.query(q.text, q.values, function(err, results) {
-                done();
-                if (err) {
-                    cb('Error updating app: ' + err);
-                } else {
-                    cb(null, results.rows[0]);
-                }
-            });
+            cb(null, app);
         }
     });
 };
