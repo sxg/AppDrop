@@ -25,10 +25,10 @@ var account = sql.define({
 var getClient = function(cb) {
     pg.connect(DATABASE_URL, function(err, client, done) {
         if (err) {
-            console.log('Error: couldn\'t fetch client from client pool:' + err);
-            throw err;
+            cb('Error: couldn\'t fetch client from client pool:' + err);
+        } else {
+            cb(null, client, done);
         }
-        cb(client, done);
     });
 };
 
