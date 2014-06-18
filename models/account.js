@@ -20,30 +20,30 @@ var createAccount = function(account, cb) {
         //    Hash the password
         bcrypt.hash(account.password, 10, function(err, hash) {
             if (err) {
-                console.log('Error: couldn\'t hash password');
-                throw err;
-            }
-            account.password_hash = hash;
-            delete account.password;
+                cb(err);
+            } else {
+                account.password_hash = hash;
+                delete account.password;
 
-            db.getClient(function(err, client, done) {
-                if (err) {
-                    cb(err);
-                } else {
-                    //    Create the new account
-                    var q = db.account.insert(account)
-                                      .returning('account_id', 'name', 'email')
-                                      .toQuery();
-                    client.query(q.text, q.values, function(err, results) {
-                        done();
-                        if (err) {
-                            cb('Error creating account: ' + err);
-                        } else {
-                            cb(null, results.rows[0]);
-                        }
-                    });
-                }
-            });
+                db.getClient(function(err, client, done) {
+                    if (err) {
+                        cb(err);
+                    } else {
+                        //    Create the new account
+                        var q = db.account.insert(account)
+                                          .returning('account_id', 'name', 'email')
+                                          .toQuery();
+                        client.query(q.text, q.values, function(err, results) {
+                            done();
+                            if (err) {
+                                cb('Error creating account: ' + err);
+                            } else {
+                                cb(null, results.rows[0]);
+                            }
+                        });
+                    }
+                });
+            }
         });
     }
 };
