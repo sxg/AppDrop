@@ -4,6 +4,7 @@ var db = require('../db/db');
 
 //    Constants
 var LIMIT = 1000;
+var PUBLIC_COLUMNS = ['app_id', 'bundle_id', 'name', 'uuid', 'account_id'];
 
 //    app:
 //        required: name, bundle_id
@@ -15,22 +16,11 @@ var createApp = function(app, cb) {
     assert.equal(typeof app.name, 'string', 'name must be a string');
     assert.equal(typeof app.bundle_id, 'string', 'bundle_id must be a string');
 
-    db.getClient(function(err, client, done) {
+    db.create(db.app, app, PUBLIC_COLUMNS, function(err, app) {
         if (err) {
             cb(err);
         } else {
-            //    Create the new app
-            var q = db.app.insert(app)
-                          .returning('app_id', 'bundle_id', 'name', 'uuid', 'account_id')
-                          .toQuery();
-            client.query(q.text, q.values, function(err, results) {
-                done();
-                if (err) {
-                    cb('Error creating app: ' + err);
-                } else {
-                    cb(null, results.rows[0]);
-                }
-            });
+            cb(null, app);
         }
     });
 };
@@ -98,7 +88,7 @@ var updateApp = function(app_id, app, cb) {
             //    Update the app by app ID
             var q = db.app.update(app)
                           .where(db.app.app_id.equals(app_id))
-                          .returning('app_id', 'bundle_id', 'name', 'uuid', 'account_id')
+                          .returning(PUBLIC_COLUMNS)
                           .toQuery();
             client.query(q.text, q.values, function(err, results) {
                 done();
@@ -116,24 +106,12 @@ var updateApp = function(app_id, app, cb) {
 var deleteApp = function(app_id, cb) {
     //    Make sure there is an app ID
     assert.equal(typeof app_id, 'string', 'app_id must be a string');
-    
-    db.getClient(function(err, client, done) {
+
+    db.destroyOne(db.app, db.app.app_id, app_id, PUBLIC_COLUMNS, function(err, app) {
         if (err) {
             cb(err);
         } else {
-            //    Delete the app by app ID
-            var q = db.app.delete()
-                          .from(db.app)
-                          .where(db.app.app_id.equals(app_id))
-                          .toQuery();
-            client.query(q.text, q.values, function(err) {
-                done();
-                if (err) {
-                    cb('Error deleting app: ' + err);
-                } else {
-                    cb(null);
-                }
-            });
+            cb(null, app);
         }
     });
 };

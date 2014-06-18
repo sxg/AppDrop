@@ -18,7 +18,7 @@ appsRouter.route(API_V1 + '/apps')
 .get(function(req, res) {
     app.getAllApps(function(err, apps) {
         if (err) {
-            res.send(err.httpStatusCode || 500, err);
+            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
             res.json(apps);
         }
@@ -27,7 +27,7 @@ appsRouter.route(API_V1 + '/apps')
 .post(function(req, res) {
     app.createApp(req.body, function(err, app) {
         if (err) {
-            res.send(err.httpStatusCode || 500, err);
+            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
             res.json(app);
         }
@@ -39,7 +39,7 @@ appsRouter.route(API_V1 + '/apps/:app_id')
 .get(function(req, res) {
     app.getApp(req.params.app_id, function(err, app) {
         if (err) {
-            res.send(err.httpStatusCode || 500, err);
+            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
             res.json(app);
         }
@@ -48,18 +48,18 @@ appsRouter.route(API_V1 + '/apps/:app_id')
 .put(function(req, res) {
     app.updateApp(req.params.app_id, req.body, function(err, app) {
         if (err) {
-            res.send(err.httpStatusCode || 500, err);
+            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
             res.json(app);
         }
     });
 })
 .delete(function(req, res) {
-    app.deleteApp(req.params.app_id, function(err) {
+    app.deleteApp(req.params.app_id, function(err, app) {
         if (err) {
-            res.send(err.httpStatusCode || 500, err);
+            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
-            res.send(204);
+            res.json(app);
         }
     });
 });
