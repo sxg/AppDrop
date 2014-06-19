@@ -13,24 +13,25 @@ var accountsRouter = express.Router();
 //    Routes
 //===========
 
+//    accounts may be an Object or an Array
+var respond = function(err, accounts, res) {
+    if (err) {
+        res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
+    } else {
+        res.json(accounts);
+    }
+};
+
 //    /api/v1/accounts
 accountsRouter.route(API_V1 + '/accounts')
 .get(function(req, res) {
     account.getAllAccounts(function(err, accounts) {
-        if (err) {
-            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
-        } else {
-            res.json(accounts);
-        }
+        respond(err, accounts, res);
     });
 })
 .post(function(req, res) {
     account.createAccount(req.body, function(err, account) {
-        if (err) {
-            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
-        } else {
-            res.json(account);
-        }
+        respond(err, account, res);
     });
 });
 
@@ -38,29 +39,17 @@ accountsRouter.route(API_V1 + '/accounts')
 accountsRouter.route(API_V1 + '/accounts/:account_id')
 .get(function(req ,res) {
     account.getAccount(req.params.account_id, function(err, account) {
-        if (err) {
-            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
-        } else {
-            res.json(account);
-        }
+        respond(err, account, res);
     });
 })
 .put(function(req, res) {
     account.updateAccount(req.params.account_id, req.body, function(err, account) {
-        if (err) {
-            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
-        } else {
-            res.json(account);
-        }
+        respond(err, account, res);
     });
 })
 .delete(function(req, res) {
-    account.deleteAccount(req.params.account_id, function(err) {
-        if (err) {
-            res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
-        } else {
-            res.send(204);
-        }
+    account.deleteAccount(req.params.account_id, function(err, account) {
+        respond(err, account, res);
     });
 });
 
