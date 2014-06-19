@@ -48,16 +48,22 @@ var create = function(table, object, returningColumns, cb) {
             cb(err);
         } else {
             //    Create the object in the database
-            var q = table.insert(object).returning(returningColumns).toQuery();
-            client.query(q.text, q.values, function(err, results) {
-                done();
+            //    Try/catch catches errors thrown in forming the SQL query due to bad input
+            try {
+                var q = table.insert(object).returning(returningColumns).toQuery();
+                client.query(q.text, q.values, function(err, results) {
+                    done();
 
-                if (err) {
-                    cb(handlePostgresError(err));
-                } else {
-                    cb(null, results.rows[0]);
-                }
-            });
+                    if (err) {
+                        cb(handlePostgresError(err));
+                    } else {
+                        cb(null, results.rows[0]);
+                    }
+                });
+            } catch (e) {
+                e.httpStatusCode = 400;
+                cb(e);
+            }
         }
     });
 };
