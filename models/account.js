@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt');
 var db = require('../db/db');
 
 //    Constants
-var PUBLIC_FIELDS = ['account_id', 'name', 'email'];
+var PUBLIC_FIELDS = ['account_id', 'name', 'email', 'created_at'];
 var LIMIT = 1000;
 var HASH_ROUNDS = 10;
 

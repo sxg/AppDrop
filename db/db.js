@@ -20,7 +20,7 @@ var build = sql.define({
 
 var account = sql.define({
     name: 'account',
-    columns: ['account_id', 'name', 'email', 'password_hash']
+    columns: ['account_id', 'name', 'email', 'password_hash', 'created_at', 'token_expires_at', 'token']
 });
 
 
