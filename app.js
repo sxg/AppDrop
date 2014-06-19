@@ -1,6 +1,6 @@
 //    Dependencies
 var express = require('express');
-var bodyParser = require('body-parser');
+var connect = require('connect');
 var appsRouter = require('./routers/apps-router');
 var accountsRouter = require('./routers/accounts-router');
 var buildsRouter = require('./routers/builds-router');
@@ -10,7 +10,9 @@ var PORT = process.env.PORT;
 
 //    Setup
 var app = express();
-app.use(bodyParser());
+app.use(connect.logger({format: 'dev'}));
+app.use(connect.json());
+app.use(connect.urlencoded());
 app.use(appsRouter);
 app.use(accountsRouter);
 app.use(buildsRouter);
