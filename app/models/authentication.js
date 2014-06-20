@@ -4,7 +4,27 @@ var sql = require('sql');
 var db = require('../../config/db');
 var account = require('./account');
 
-var authenticateAccount = function(email, password, cb) {
+var unauthorizedError = function() {
+    var err = new Error();
+    err.name = 'UnauthorizedError';
+    err.message = 'invalid email or password';
+    err.httpStatusCode = 401;
+    return err;
+};
+
+var invalidTokenError = function() {
+    var err = new Error();
+    err.name = 'UnauthorizedError';
+    err.message = 'invalid token';
+    err.httpStatusCode = 401;
+    return err;
+};
+
+//===================
+//    Authentication
+//===================
+
+var getToken = function(email, password, cb) {
     //    Get the account to authenticate
     var returningColumns = ['password_hash', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
@@ -36,15 +56,24 @@ var authenticateAccount = function(email, password, cb) {
     });
 };
 
-//    Helper function to quickly create an UnauthorizedError
-var unauthorizedError = function() {
-    var err = new Error();
-    err.name = 'UnauthorizedError';
-    err.message = 'invalid email or password';
-    err.httpStatusCode = 401;
-    return err;
+var authenticateAccount = function(email, token, cb) {
+    //    Get the account to authenticate
+    var returningColumns = ['token', 'token_expires_at'];
+    db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
+        //    Account not found
+        if (err) cb(unauthorizedError());
+        else {
+            //    Tokens don't match
+            if (token !== requestedAccount.token) {
+                cb(invalidTokenError());
+            } else {
+                cb(null, true);
+            }
+        }
+    });
 };
 
 module.exports = {
+    getToken: getToken,
     authenticateAccount: authenticateAccount
 };
