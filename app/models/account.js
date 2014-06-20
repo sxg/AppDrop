@@ -1,11 +1,17 @@
 //    Dependencies
 var bcrypt = require('bcrypt');
+var sql = require('sql');
 var db = require('../../config/db');
 
 //    Constants
 var PUBLIC_FIELDS = ['account_id', 'name', 'email', 'created_at'];
 var LIMIT = 1000;
 var HASH_ROUNDS = 10;
+
+
+//=========
+//    CRUD
+//=========
 
 //    account:
 //        required: name, email, password
@@ -61,11 +67,33 @@ var deleteAccount = function(account_id, cb) {
     db.destroyOne(db.account, db.account.account_id, account_id, PUBLIC_FIELDS, cb);
 };
 
+//===================
+//    Authentication
+//===================
+
+var updateToken = function(email, cb) {
+    var random = sql.functionCallCreator('random');
+    var md5 = sql.functionCallCreator('md5');
+    var updatedToken = {
+        token_expires_at: (new Date()).toISOString(),
+        token: md5(random().cast('text'))
+    };
+    var returningColumns = ['token', 'token_expires_at'];
+    db.updateOne(db.account, db.account.email, email, updatedToken, returningColumns, function(err, account) {
+        if (err) {
+            cb(err);
+        } else {
+            cb(null, account);
+        }
+    });
+};
+
 //    Public
 module.exports = {
     createAccount: createAccount,
     getAllAccounts: getAllAccounts,
     getAccount: getAccount,
     updateAccount: updateAccount,
-    deleteAccount: deleteAccount
+    deleteAccount: deleteAccount,
+    updateToken: updateToken
 };

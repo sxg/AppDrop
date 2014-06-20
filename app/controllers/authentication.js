@@ -16,14 +16,11 @@ var authRouter = express.Router();
 //    /api/v1/login
 authRouter.route(API_V1 + '/login')
 .post(function(req, res) {
-    auth.authenticateAccount(req.body.email, req.body.password, function(err, token, tokenExpiration) {
+    auth.authenticateAccount(req.body.email, req.body.password, function(err, token) {
         if (err) {
             res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
         } else {
-            res.json({
-                token: token,
-                token_expires_at: tokenExpiration
-            });
+            res.json(token);
         }
     });
 });
