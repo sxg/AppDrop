@@ -1,5 +1,4 @@
 //    Dependencies
-var assert = require('assert');
 var bcrypt = require('bcrypt');
 var db = require('../../config/db');
 

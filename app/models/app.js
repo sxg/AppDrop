@@ -1,5 +1,4 @@
 //    Dependencies
-var assert = require('assert');
 var db = require('../../config/db');
 
 //    Constants
