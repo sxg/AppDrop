@@ -8,7 +8,7 @@ var PUBLIC_FIELDS = ['build_id',
                      'version',
                      'bundle_id',
                      'download_count',
-                     'uploaded_at',
+                     'created_at',
                      'downloaded_last_at'];
 var LIMIT = 1000;
 
