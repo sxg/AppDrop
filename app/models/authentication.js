@@ -4,7 +4,7 @@ var sql = require('sql');
 var db = require('../../config/db');
 var account = require('./account');
 
-var unauthorizedError = function() {
+var unauthorizedPasswordError = function() {
     var err = new Error();
     err.name = 'UnauthorizedError';
     err.message = 'invalid email or password';
@@ -12,10 +12,10 @@ var unauthorizedError = function() {
     return err;
 };
 
-var invalidTokenError = function() {
+var unauthorizedTokenError = function() {
     var err = new Error();
     err.name = 'UnauthorizedError';
-    err.message = 'invalid token';
+    err.message = 'invalid email or token';
     err.httpStatusCode = 401;
     return err;
 };
@@ -29,14 +29,14 @@ var getToken = function(email, password, cb) {
     var returningColumns = ['password_hash', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
-        if (err) cb(unauthorizedError());
+        if (err) cb(unauthorizedPasswordError());
         else {
             //    Verify the password
             bcrypt.compare(password, requestedAccount.password_hash, function(err, match) {
                 delete requestedAccount.password_hash;
                 //    Bcrypt error or invalid password
                 if (err || !match) {
-                    cb(err || unauthorizedError());
+                    cb(err || unauthorizedPasswordError());
                 } else {
                     var expirationDate = new Date(requestedAccount.token_expires_at);
                     var now = new Date();
@@ -61,11 +61,11 @@ var authenticateAccount = function(email, token, cb) {
     var returningColumns = ['token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
-        if (err) cb(unauthorizedError());
+        if (err) cb(unauthorizedTokenError());
         else {
             //    Tokens don't match
             if (token !== requestedAccount.token) {
-                cb(invalidTokenError());
+                cb(unauthorizedTokenError());
             } else {
                 cb(null, true);
             }

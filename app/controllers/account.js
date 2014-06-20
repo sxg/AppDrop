@@ -2,9 +2,6 @@
 var express = require('express');
 var account = require('../models/account');
 
-//    Constants
-var API_V1 = '/api/v1';
-
 //    Setup
 var accountsRouter = express.Router();
 
@@ -22,8 +19,8 @@ var respond = function(err, accounts, res) {
     }
 };
 
-//    /api/v1/accounts
-accountsRouter.route(API_V1 + '/accounts')
+//    /accounts
+accountsRouter.route('/accounts')
 .get(function(req, res) {
     account.getAllAccounts(function(err, accounts) {
         respond(err, accounts, res);
@@ -35,8 +32,8 @@ accountsRouter.route(API_V1 + '/accounts')
     });
 });
 
-//    /api/v1/accounts/:account_id
-accountsRouter.route(API_V1 + '/accounts/:account_id')
+//    /accounts/:account_id
+accountsRouter.route('/accounts/:account_id')
 .get(function(req ,res) {
     account.getAccount(req.params.account_id, function(err, account) {
         respond(err, account, res);

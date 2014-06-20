@@ -2,9 +2,6 @@
 var express = require('express');
 var app = require('../models/app');
 
-//    Constants
-var API_V1 = '/api/v1';
-
 //    Setup
 var appsRouter = express.Router();
 
@@ -22,8 +19,8 @@ var respond = function(err, apps, res) {
     }
 };
 
-//    /api/v1/apps
-appsRouter.route(API_V1 + '/apps')
+//    /apps
+appsRouter.route('/apps')
 .get(function(req, res) {
     app.getAllApps(function(err, apps) {
         respond(err, apps, res);
@@ -35,8 +32,8 @@ appsRouter.route(API_V1 + '/apps')
     });
 });
 
-//    /api/v1/apps/:app_id
-appsRouter.route(API_V1 + '/apps/:app_id')
+//    /apps/:app_id
+appsRouter.route('/apps/:app_id')
 .get(function(req, res) {
     app.getApp(req.params.app_id, function(err, app) {
         respond(err, app, res);

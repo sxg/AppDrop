@@ -2,9 +2,6 @@
 var express = require('express');
 var build = require('../models/build');
 
-//    Constants
-var API_V1 = '/api/v1';
-
 //    Setup
 var buildsRouter = express.Router();
 
@@ -22,8 +19,8 @@ var respond = function(err, builds, res) {
     }
 };
 
-//    /api/v1/builds
-buildsRouter.route(API_V1 + '/builds')
+//    /builds
+buildsRouter.route('/builds')
 .get(function(req, res) {
     build.getAllBuilds(function(err, builds) {
         respond(err, builds, res);
@@ -35,7 +32,8 @@ buildsRouter.route(API_V1 + '/builds')
     });
 });
 
-buildsRouter.route(API_V1 + '/builds/:build_id')
+//    /builds/:build_id
+buildsRouter.route('/builds/:build_id')
 .get(function(req, res) {
     build.getBuild(req.params.build_id, function(err, build) {
         respond(err, build, res);

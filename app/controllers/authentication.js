@@ -2,9 +2,6 @@
 var express = require('express');
 var auth = require('../models/authentication');
 
-//    Constants
-var API_V1 = '/api/v1';
-
 //    Setup
 var authRouter = express.Router();
 
@@ -13,8 +10,8 @@ var authRouter = express.Router();
 //    Routes
 //===========
 
-//    /api/v1/login
-authRouter.route(API_V1 + '/login')
+//    /login
+authRouter.route('/login')
 .post(function(req, res) {
     auth.getToken(req.body.email, req.body.password, function(err, token) {
         if (err) {
