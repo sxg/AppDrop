@@ -9,13 +9,13 @@ var authenticateAccount = function(email, password, cb) {
     var returningColumns = ['password_hash', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         if (err) {
-            cb(err);    //    Account not found
+            cb(unauthorizedError());    //    Account not found
         } else {
             //    Verify the password
             bcrypt.compare(password, requestedAccount.password_hash, function(err, match) {
                 delete requestedAccount.password_hash;
                 if (err || !match) {
-                    cb(err || formatError(new Error()));    //    Bcrypt error or invalid password
+                    cb(err || unauthorizedError());    //    Bcrypt error or invalid password
                 } else {
                     var expirationDate = new Date(requestedAccount.token_expires_at);
                     var now = new Date();
@@ -38,7 +38,8 @@ var authenticateAccount = function(email, password, cb) {
 };
 
 //    Helper function to quickly create an UnauthorizedError
-var formatError = function(err) {
+var unauthorizedError = function() {
+    var err = new Error();
     err.name = 'UnauthorizedError';
     err.message = 'invalid email or password';
     err.httpStatusCode = 401;
