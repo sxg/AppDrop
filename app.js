@@ -4,6 +4,7 @@ var connect = require('connect');
 var appsRouter = require('./app/controllers/app');
 var accountsRouter = require('./app/controllers/account');
 var buildsRouter = require('./app/controllers/build');
+var authRouter = require('./app/controllers/authentication');
 
 //    Constants
 var PORT = process.env.PORT;
@@ -16,6 +17,7 @@ app.use(connect.urlencoded());
 app.use(appsRouter);
 app.use(accountsRouter);
 app.use(buildsRouter);
+app.use(authRouter);
 
 
 //=====================
