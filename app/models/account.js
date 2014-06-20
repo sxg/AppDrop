@@ -1,7 +1,7 @@
 //    Dependencies
 var assert = require('assert');
 var bcrypt = require('bcrypt');
-var db = require('../db/db');
+var db = require('../../config/db');
 
 //    Constants
 var PUBLIC_FIELDS = ['account_id', 'name', 'email', 'created_at'];

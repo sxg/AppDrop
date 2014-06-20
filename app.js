@@ -1,9 +1,9 @@
 //    Dependencies
 var express = require('express');
 var connect = require('connect');
-var appsRouter = require('./routers/apps-router');
-var accountsRouter = require('./routers/accounts-router');
-var buildsRouter = require('./routers/builds-router');
+var appsRouter = require('./app/controllers/apps-controller');
+var accountsRouter = require('./app/controllers/accounts-controller');
+var buildsRouter = require('./app/controllers/builds-controller');
 
 //    Constants
 var PORT = process.env.PORT;

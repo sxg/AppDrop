@@ -1,6 +1,6 @@
 //    Dependencies
 var assert = require('assert');
-var db = require('../db/db');
+var db = require('../../config/db');
 
 //    Constants
 var PUBLIC_FIELDS = ['app_id', 'bundle_id', 'name', 'uuid', 'account_id', 'created_at'];
