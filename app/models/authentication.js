@@ -8,28 +8,27 @@ var authenticateAccount = function(email, password, cb) {
     //    Get the account to authenticate
     var returningColumns = ['password_hash', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
-        if (err) {
-            cb(unauthorizedError());    //    Account not found
-        } else {
+        //    Account not found
+        if (err) cb(unauthorizedError());
+        else {
             //    Verify the password
             bcrypt.compare(password, requestedAccount.password_hash, function(err, match) {
                 delete requestedAccount.password_hash;
+                //    Bcrypt error or invalid password
                 if (err || !match) {
-                    cb(err || unauthorizedError());    //    Bcrypt error or invalid password
+                    cb(err || unauthorizedError());
                 } else {
                     var expirationDate = new Date(requestedAccount.token_expires_at);
                     var now = new Date();
                     if (expirationDate < now) {
                         //    Expired token; get a fresh one
                         account.updateToken(email, function(err, requestedAccount) {
-                            if (err) {
-                                cb(err);
-                            } else {
-                                cb(null, requestedAccount);
-                            }
+                            if (err) cb(err);
+                            else cb(null, requestedAccount);
                         });
                     } else {
-                        cb(null, requestedAccount);    //    Return the token
+                        //    Return the token
+                        cb(null, requestedAccount);
                     }
                 }
             });

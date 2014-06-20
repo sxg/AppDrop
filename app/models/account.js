@@ -47,11 +47,11 @@ var updateAccount = function(account_id, account, cb) {
     };
 
     if (account.password) {
+
         //    Hash the password
         bcrypt.hash(account.password, HASH_ROUNDS, function(err, hash) {
-            if (err) {
-                cb(err);
-            } else {
+            if (err) cb(err);
+            else {
                 account.password_hash = hash;
                 delete account.password;
                 update();
@@ -74,8 +74,10 @@ var deleteAccount = function(account_id, cb) {
 var updateToken = function(email, cb) {
     var random = sql.functionCallCreator('random');
     var md5 = sql.functionCallCreator('md5');
+    var nextWeek = new Date((new Date()).getTime() + 604800000);
+
     var updatedToken = {
-        token_expires_at: (new Date()).toISOString(),
+        token_expires_at: nextWeek.toISOString(),
         token: md5(random().cast('text'))
     };
     var returningColumns = ['token', 'token_expires_at'];
