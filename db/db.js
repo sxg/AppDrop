@@ -10,7 +10,7 @@ var LIMIT = 1000;
 //    Tables
 var app = sql.define({
     name: 'app',
-    columns: ['app_id', 'bundle_id', 'name', 'uuid', 'private', 'password_hash', 'account_id']
+    columns: ['app_id', 'bundle_id', 'name', 'uuid', 'private', 'password_hash', 'account_id', 'created_at']
 });
 
 var build = sql.define({
