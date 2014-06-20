@@ -100,7 +100,6 @@ var retrieveOne = function(table, column, value, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
     assert.ok(column, 'column must be non null');
-    assert.ok(/\w*_id/, 'column must be an id'); // id columns are unique, ensuring only one row gets updated
     assert.ok(value, 'value must be non null');
     assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
     assert.ok(cb instanceof Function, 'cb must be a Function');
@@ -137,7 +136,6 @@ var updateOne = function(table, column, value, object, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
     assert.ok(column, 'column must be non null');
-    assert.ok(/\w*_id/, 'column must be an id'); // id columns are unique, ensuring only one row gets updated
     assert.ok(value, 'value must be non null');
     assert.ok(object, 'must be non null');
     assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
@@ -181,7 +179,6 @@ var destroyOne = function(table, column, value, returningColumns, cb) {
     //    Check paramters
     assert.ok(table, 'table must be non null');
     assert.ok(column, 'column must be non null');
-    assert.ok(/\w*_id/, 'column must be an id'); // id columns are unique, ensuring only one row gets deleted
     assert.ok(value, 'value must be non null');
     assert.ok(cb instanceof Function, 'cb must be a Function');
 
