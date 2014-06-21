@@ -1,6 +1,5 @@
 //    Dependencies
 var bcrypt = require('bcrypt');
-var sql = require('sql');
 var db = require('../../config/db');
 var account = require('./account');
 
