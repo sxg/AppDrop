@@ -4,7 +4,7 @@ var sql = require('sql');
 var db = require('../../config/db');
 
 //    Constants
-var PUBLIC_FIELDS = ['account_id', 'name', 'email', 'created_at'];
+var PUBLIC_FIELDS = ['account_id', 'name', 'email', 'permission', 'created_at'];
 var LIMIT = 1000;
 var HASH_ROUNDS = 10;
 

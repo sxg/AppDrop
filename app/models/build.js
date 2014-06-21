@@ -11,6 +11,10 @@ var PUBLIC_FIELDS = ['build_id',
                      'downloaded_last_at'];
 var LIMIT = 1000;
 
+//=========
+//    CRUD
+//=========
+
 //    build:
 //        required: build_number, version, bundle_id
 //    cb(err, build)

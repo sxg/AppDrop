@@ -58,7 +58,7 @@ var getToken = function(email, password, cb) {
 
 var authenticateAccount = function(email, token, cb) {
     //    Get the account to authenticate
-    var returningColumns = ['account_id', 'email', 'name', 'token'];
+    var returningColumns = ['account_id', 'email', 'name', 'permission', 'token'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
         if (err) cb(invalidTokenError());
