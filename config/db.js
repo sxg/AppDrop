@@ -24,17 +24,9 @@ var account = sql.define({
 });
 
 
-var getClient = function(cb) {
-    pg.connect(DATABASE_URL, function(err, client, done) {
-        if (err) {
-            err.name = 'GatewayTimeoutError';
-            err.httpStatusCode = 504;
-            cb(err);
-        } else {
-            cb(null, client, done);
-        }
-    });
-};
+//=========
+//    CRUD
+//=========
 
 var create = function(table, object, returningColumns, cb) {
     //    Check paramters
@@ -211,6 +203,28 @@ var destroyOne = function(table, column, value, returningColumns, cb) {
     });
 };
 
+//============
+//    Helpers
+//============
+
+var randomMD5Hash = function() {
+    var random = sql.functionCallCreator('random');
+    var md5 = sql.functionCallCreator('md5');
+    return md5(random().cast('text'));
+};
+
+var getClient = function(cb) {
+    pg.connect(DATABASE_URL, function(err, client, done) {
+        if (err) {
+            err.name = 'GatewayTimeoutError';
+            err.httpStatusCode = 504;
+            cb(err);
+        } else {
+            cb(null, client, done);
+        }
+    });
+};
+
 var handlePostgresError = function(err) {
     switch(err.code) {
     case '23505':
@@ -234,10 +248,10 @@ module.exports = {
     app: app,
     build: build,
     account: account,
-    getClient: getClient,
     create: create,
     updateOne: updateOne,
     retrieveAll: retrieveAll,
     retrieveOne: retrieveOne,
-    destroyOne: destroyOne
+    destroyOne: destroyOne,
+    randomMD5Hash: randomMD5Hash
 };

@@ -1,6 +1,5 @@
 //    Dependencies
 var bcrypt = require('bcrypt');
-var sql = require('sql');
 var db = require('../../config/db');
 
 //    Constants
@@ -72,13 +71,11 @@ var deleteAccount = function(account_id, cb) {
 //===================
 
 var updateToken = function(email, cb) {
-    var random = sql.functionCallCreator('random');
-    var md5 = sql.functionCallCreator('md5');
     var nextWeek = new Date((new Date()).getTime() + 604800000);
 
     var updatedToken = {
         token_expires_at: nextWeek.toISOString(),
-        token: md5(random().cast('text'))
+        token: db.randomMD5Hash()
     };
     var returningColumns = ['token', 'token_expires_at'];
     db.updateOne(db.account, db.account.email, email, updatedToken, returningColumns, function(err, account) {
