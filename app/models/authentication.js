@@ -4,7 +4,7 @@ var sql = require('sql');
 var db = require('../../config/db');
 var account = require('./account');
 
-var unauthorizedPasswordError = function() {
+var invalidPasswordError = function() {
     var err = new Error();
     err.name = 'UnauthorizedError';
     err.message = 'invalid email or password';
@@ -12,7 +12,7 @@ var unauthorizedPasswordError = function() {
     return err;
 };
 
-var unauthorizedTokenError = function() {
+var invalidTokenError = function() {
     var err = new Error();
     err.name = 'UnauthorizedError';
     err.message = 'invalid email or token';
@@ -29,14 +29,14 @@ var getToken = function(email, password, cb) {
     var returningColumns = ['password_hash', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
-        if (err) cb(unauthorizedPasswordError());
+        if (err) cb(invalidPasswordError());
         else {
             //    Verify the password
             bcrypt.compare(password, requestedAccount.password_hash, function(err, match) {
                 delete requestedAccount.password_hash;
                 //    Bcrypt error or invalid password
                 if (err || !match) {
-                    cb(err || unauthorizedPasswordError());
+                    cb(err || invalidPasswordError());
                 } else {
                     var expirationDate = new Date(requestedAccount.token_expires_at);
                     var now = new Date();
@@ -61,11 +61,11 @@ var authenticateAccount = function(email, token, cb) {
     var returningColumns = ['token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
-        if (err) cb(unauthorizedTokenError());
+        if (err) cb(invalidTokenError());
         else {
             //    Tokens don't match
             if (token !== requestedAccount.token) {
-                cb(unauthorizedTokenError());
+                cb(invalidTokenError());
             } else {
                 cb(null, true);
             }
