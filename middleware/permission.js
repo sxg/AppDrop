@@ -13,7 +13,7 @@ var invalidPermissionError = function() {
 //    Middleware
 //===============
 
-var minLevel = function(requiredPermissionLevel) {
+var needMinLevel = function(requiredPermissionLevel) {
     return function(req, res, next) {
         var requiredRank = permissions.indexOf(requiredPermissionLevel);
         var accountRank = permissions.indexOf(req.account.permission);
@@ -25,11 +25,15 @@ var minLevel = function(requiredPermissionLevel) {
     };
 };
 
-var check = function(block) {
+var needToOwnAccount = function() {
     return function(req, res, next) {
-        var err = block();
-        if (err) {
-            res.send(err.httpStatusCode || 403, JSON.stringify(err, ['name', 'message', 'detail']));
+        var accountID = req.account.account_id;
+        var requestedAccountID = parseInt(req.params.account_id);
+        if (accountID !== requestedAccountID) {
+            var err = new Error();
+            err.name = 'ForbiddenError';
+            err.message = 'you do not own the account associated with this request';
+            res.send(403, JSON.stringify(err, ['name', 'message']));
         } else {
             next();
         }
@@ -37,8 +41,8 @@ var check = function(block) {
 };
 
 module.exports = {
-    minLevel: minLevel,
-    check: check,
+    needMinLevel: needMinLevel,
+    needToOwnAccount: needToOwnAccount,
     levels: {
         USER: 'user',
         ADMIN: 'admin'
