@@ -15,10 +15,11 @@ module.exports = function() {
             err.message = 'missing email or token header';
             res.send(403, JSON.stringify(err));
         } else {
-            auth.authenticateAccount(email, token, function(err, success) {
-                if (err || !success) {
+            auth.authenticateAccount(email, token, function(err, requestedAccount) {
+                if (err || !requestedAccount) {
                     res.send(err.httpStatusCode || 500, JSON.stringify(err, ['name', 'message', 'detail']));
                 } else {
+                    req.account = requestedAccount;
                     next();
                 }
             });

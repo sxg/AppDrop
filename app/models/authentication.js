@@ -58,7 +58,7 @@ var getToken = function(email, password, cb) {
 
 var authenticateAccount = function(email, token, cb) {
     //    Get the account to authenticate
-    var returningColumns = ['token', 'token_expires_at'];
+    var returningColumns = ['account_id', 'email', 'name', 'token', 'token_expires_at'];
     db.retrieveOne(db.account, db.account.email, email, returningColumns, function(err, requestedAccount) {
         //    Account not found
         if (err) cb(invalidTokenError());
@@ -67,7 +67,9 @@ var authenticateAccount = function(email, token, cb) {
             if (token !== requestedAccount.token) {
                 cb(invalidTokenError());
             } else {
-                cb(null, true);
+                delete requestedAccount.token;
+                delete requestedAccount.token_expires_at;
+                cb(null, requestedAccount);
             }
         }
     });
