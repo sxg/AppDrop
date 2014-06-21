@@ -1,7 +1,11 @@
 //    Dependencies
 var express = require('express');
 var account = require('../models/account');
-var permission = require('../../middleware/permission');
+var perm = require('../../middleware/permission');
+
+//    Constants
+var GENERAL_ROUTE = '/accounts';
+var SPECIFIC_ROUTE = '/accounts/:account_id';
 
 //    Setup
 var accountsRouter = express.Router();
@@ -21,20 +25,22 @@ var respond = function(err, accounts, res) {
 };
 
 //    /accounts
-accountsRouter.route('/accounts')
-.get(permission.requireMinLevel(permission.levels.USER), function(req, res) {
+accountsRouter.route(GENERAL_ROUTE)
+.get(perm.needMinLevel(perm.levels.ADMIN), function(req, res) {
     account.getAllAccounts(function(err, accounts) {
         respond(err, accounts, res);
     });
 })
-.post(permission.requireMinLevel(permission.levels.ADMIN), function(req, res) {
+.post(function(req, res) {
     account.createAccount(req.body, function(err, account) {
         respond(err, account, res);
     });
 });
 
 //    /accounts/:account_id
-accountsRouter.route('/accounts/:account_id')
+accountsRouter
+.use(SPECIFIC_ROUTE, perm.needToOwnAccount())
+.route(SPECIFIC_ROUTE)
 .get(function(req ,res) {
     account.getAccount(req.params.account_id, function(err, account) {
         respond(err, account, res);
