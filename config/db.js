@@ -15,7 +15,7 @@ var app = sql.define({
 
 var build = sql.define({
     name: 'build',
-    columns: ['build_id', 'build_number', 'version', 'path', 'created_at', 'downloaded_last_at', 'download_count', 'bundle_id']
+    columns: ['build_id', 'build_number', 'version', 'path', 'created_at', 'downloaded_last_at', 'download_count', 'bundle_id', 'account_id']
 });
 
 var account = sql.define({
