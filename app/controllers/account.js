@@ -1,6 +1,7 @@
 //    Dependencies
 var express = require('express');
 var account = require('../models/account');
+var permission = require('../../middleware/permission');
 
 //    Setup
 var accountsRouter = express.Router();
@@ -21,12 +22,12 @@ var respond = function(err, accounts, res) {
 
 //    /accounts
 accountsRouter.route('/accounts')
-.get(function(req, res) {
+.get(permission.requireMinLevel(permission.levels.USER), function(req, res) {
     account.getAllAccounts(function(err, accounts) {
         respond(err, accounts, res);
     });
 })
-.post(function(req, res) {
+.post(permission.requireMinLevel(permission.levels.ADMIN), function(req, res) {
     account.createAccount(req.body, function(err, account) {
         respond(err, account, res);
     });
