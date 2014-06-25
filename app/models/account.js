@@ -36,13 +36,13 @@ var getAllAccounts = function(cb) {
 
 //    cb(err, account)
 var getAccount = function(account_id, cb) {
-    db.retrieveOne(db.account, db.account.account_id, account_id, PUBLIC_FIELDS, cb);
+    db.retrieveOne(db.account, [db.account.account_id], [account_id], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, account)
 var updateAccount = function(account_id, account, cb) {
     var update = function() {
-        db.updateOne(db.account, db.account.account_id, account_id, account, PUBLIC_FIELDS, cb);
+        db.updateOne(db.account, [db.account.account_id], [account_id], account, PUBLIC_FIELDS, cb);
     };
 
     if (account.password) {
@@ -63,7 +63,7 @@ var updateAccount = function(account_id, account, cb) {
 
 //    cb(err)
 var deleteAccount = function(account_id, cb) {
-    db.destroyOne(db.account, db.account.account_id, account_id, PUBLIC_FIELDS, cb);
+    db.destroyOne(db.account, [db.account.account_id], [account_id], PUBLIC_FIELDS, cb);
 };
 
 //===================
@@ -78,7 +78,7 @@ var updateToken = function(email, cb) {
         token: db.randomMD5Hash()
     };
     var returningColumns = ['token', 'token_expires_at'];
-    db.updateOne(db.account, db.account.email, email, updatedToken, returningColumns, function(err, account) {
+    db.updateOne(db.account, [db.account.email], [email], updatedToken, returningColumns, function(err, account) {
         if (err) {
             cb(err);
         } else {

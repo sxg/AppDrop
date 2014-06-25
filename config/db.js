@@ -88,11 +88,11 @@ var retrieveAll = function(table, returningColumns, cb) {
     });
 };
 
-var retrieveOne = function(table, column, value, returningColumns, cb) {
+var retrieveOne = function(table, columns, values, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
-    assert.ok(column, 'column must be non null');
-    assert.ok(value, 'value must be non null');
+    assert.ok(columns instanceof Array, 'columns must be an array');
+    assert.ok(values instanceof Array, 'values must be an array');
     assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
     assert.ok(cb instanceof Function, 'cb must be a Function');
 
@@ -101,19 +101,17 @@ var retrieveOne = function(table, column, value, returningColumns, cb) {
             cb(err);
         } else {
             //    Get the object in the database
-            var q = table.select(returningColumns)
-                         .from(table)
-                         .where(column.equals(value))
-                         .toQuery();
+            var q = appendWhere(table.select(returningColumns).from(table), columns, values);
+            console.log(q.text);
             client.query(q.text, q.values, function(err, results) {
                 done();
-                assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + column.name + ' == ' + value);
+                assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
 
                 if (err) {
                     cb(handlePostgresError(err));
                 } else if (results.rows.length === 0) {
                     err = new Error('NotFoundError');
-                    err.message = 'no data exists where ' + column.name + ' == ' + value;
+                    err.message = 'no data exists where ' + columns + ' == ' + values;
                     err.httpStatusCode = 404;
                     cb(err);
                 } else {
@@ -124,11 +122,11 @@ var retrieveOne = function(table, column, value, returningColumns, cb) {
     });
 };
 
-var updateOne = function(table, column, value, object, returningColumns, cb) {
+var updateOne = function(table, columns, values, object, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
-    assert.ok(column, 'column must be non null');
-    assert.ok(value, 'value must be non null');
+    assert.ok(columns instanceof Array, 'columns must be an array');
+    assert.ok(values instanceof Array, 'values must be an array');
     assert.ok(object, 'must be non null');
     assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
     assert.ok(cb instanceof Function, 'cb must be a Function');
@@ -140,19 +138,17 @@ var updateOne = function(table, column, value, object, returningColumns, cb) {
             //    Update the object in the database
             //    Try/catch catches errors thrown in forming the SQL query due to bad input
             try {
-                var q = table.update(object)
-                             .where(column.equals(value))
-                             .returning(returningColumns)
-                             .toQuery();
+                var q = appendWhere(table.update(object).returning(returningColumns), columns, values);
+                console.log(q.text);
                 client.query(q.text, q.values, function(err, results) {
                     done();
-                    assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + column.name + ' == ' + value);
+                    assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
 
                     if (err) {
                         cb(handlePostgresError(err));
                     } else if (results.rows.length === 0) {
                         err = new Error('NotFoundError');
-                        err.message = 'no data exists where ' + column.name + ' == ' + value;
+                        err.message = 'no data exists where ' + columns + ' == ' + values;
                         err.httpStatusCode = 404;
                         cb(err);
                     } else {
@@ -167,11 +163,11 @@ var updateOne = function(table, column, value, object, returningColumns, cb) {
     });
 };
 
-var destroyOne = function(table, column, value, returningColumns, cb) {
+var destroyOne = function(table, columns, values, returningColumns, cb) {
     //    Check paramters
     assert.ok(table, 'table must be non null');
-    assert.ok(column, 'column must be non null');
-    assert.ok(value, 'value must be non null');
+    assert.ok(columns instanceof Array, 'columns must be an array');
+    assert.ok(values instanceof Array, 'values must be an array');
     assert.ok(cb instanceof Function, 'cb must be a Function');
 
     getClient(function(err, client, done) {
@@ -179,20 +175,17 @@ var destroyOne = function(table, column, value, returningColumns, cb) {
             cb(err);
         } else {
             //    Destroy the matching objects in the database
-            var q = table.delete()
-                         .from(table)
-                         .where(column.equals(value))
-                         .returning(returningColumns)
-                         .toQuery();
+            var q = appendWhere(table.delete().from(table).returning(returningColumns), columns, values);
+            console.log(q.text);
             client.query(q.text, q.values, function(err, results) {
                 done();
-                assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + column.name + ' == ' + value);
+                assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
 
                 if (err) {
                     cb(handlePostgresError(err));
                 } else if (results.rows.length === 0) {
                     err = new Error('NotFoundError');
-                    err.message = 'no data exists where ' + column.name + ' == ' + value;
+                    err.message = 'no data exists where ' + columns + ' == ' + values;
                     err.httpStatusCode = 404;
                     cb(err);
                 } else {
@@ -206,6 +199,15 @@ var destroyOne = function(table, column, value, returningColumns, cb) {
 //============
 //    Helpers
 //============
+
+var appendWhere = function(q, columns, values) {
+    assert.equal(columns.length, values.length, 'number of columns must equal number of values');
+
+    for (var i = 0; i < columns.length; i++) {
+        q.where(columns[i].equals(values[i]));
+    }
+    return q.toQuery();
+};
 
 var randomMD5Hash = function() {
     var random = sql.functionCallCreator('random');

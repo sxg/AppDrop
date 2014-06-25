@@ -20,17 +20,17 @@ var getAllApps = function(cb) {
 
 //    cb(err, app)
 var getApp = function(app_id, cb) {
-    db.retrieveOne(db.app, db.app.app_id, app_id, PUBLIC_FIELDS, cb);
+    db.retrieveOne(db.app, [db.app.app_id], [app_id], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, app)
 var updateApp = function(app_id, app, cb) {
-    db.updateOne(db.app, db.app.app_id, app_id, app, PUBLIC_FIELDS, cb);
+    db.updateOne(db.app, [db.app.app_id], [app_id], app, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err)
 var deleteApp = function(app_id, cb) {
-    db.destroyOne(db.app, db.app.app_id, app_id, PUBLIC_FIELDS, cb);
+    db.destroyOne(db.app, [db.app.app_id], [app_id], PUBLIC_FIELDS, cb);
 };
 
 //    Public

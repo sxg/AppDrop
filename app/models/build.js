@@ -27,15 +27,15 @@ var getAllBuilds = function(cb) {
 };
 
 var getBuild = function(build_id, cb) {
-    db.retrieveOne(db.build, db.build.build_id, build_id, PUBLIC_FIELDS, cb);
+    db.retrieveOne(db.build, [db.build.build_id], [build_id], PUBLIC_FIELDS, cb);
 };
 
 var updateBuild = function(build_id, build, cb) {
-    db.updateOne(db.build, db.build.build_id, build_id, build, PUBLIC_FIELDS, cb);
+    db.updateOne(db.build, [db.build.build_id], [build_id], build, PUBLIC_FIELDS, cb);
 };
 
 var deleteBuild = function(build_id, cb) {
-    db.destroyOne(db.build, db.build.build_id, build_id, PUBLIC_FIELDS, cb);
+    db.destroyOne(db.build, [db.build.build_id], [build_id], PUBLIC_FIELDS, cb);
 };
 
 //    Public
