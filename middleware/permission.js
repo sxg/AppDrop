@@ -20,7 +20,7 @@ var invalidOwnershipError = function() {
 //    Middleware
 //===============
 
-var needMinLevel = function(requiredPermissionLevel) {
+var needLevel = function(requiredPermissionLevel) {
     return function(req, res, next) {
         var requiredRank = permissions.indexOf(requiredPermissionLevel);
         var accountRank = permissions.indexOf(req.account.permission);
@@ -32,12 +32,12 @@ var needMinLevel = function(requiredPermissionLevel) {
     };
 };
 
-var needToOwnAccount = function() {
+var needOwnership = function() {
     return function(req, res, next) {
         var accountID = req.account.account_id;
         var requestedAccountID = parseInt(req.params.accountID);
         if (accountID !== requestedAccountID) {
-            res.send(403, JSON.stringify(invalidOwnershipError(), ['name', 'message']));
+            res.send(403, JSON.stringify(invalidOwnershipError(), ['name', 'message', 'detail']));
         } else {
             next();
         }
@@ -45,10 +45,10 @@ var needToOwnAccount = function() {
 };
 
 module.exports = {
-    needMinLevel: needMinLevel,
-    needToOwnAccount: needToOwnAccount,
+    needLevel: needLevel,
+    needOwnership: needOwnership,
     levels: {
-        USER: 'user',
-        ADMIN: 'admin'
+        USER: permissions[0],
+        ADMIN: permissions[1]
     }
 };

@@ -25,15 +25,15 @@ router
 
 //    ACCOUNTS
 router
-.get(API_V1 + '/accounts', perm.needMinLevel(perm.levels.ADMIN), accountController.getAll)
+.get(API_V1 + '/accounts', perm.needLevel(perm.levels.ADMIN), accountController.getAll)
 .post(API_V1 + '/accounts', accountController.create)
-.get(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.getOne)
-.put(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.update)
-.delete(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.destroy);
+.get(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.getOne)
+.put(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.update)
+.delete(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.destroy);
 
 //    APPS
 router
-.get(API_V1 + '/apps', perm.needMinLevel(perm.levels.ADMIN), appController.getAll)
+.get(API_V1 + '/apps', perm.needLevel(perm.levels.ADMIN), appController.getAll)
 .post(API_V1 + '/apps', appController.create)
 .get(API_V1 + '/apps/:appID', appController.getOne)
 .put(API_V1 + '/apps/:appID', appController.update)
@@ -41,7 +41,7 @@ router
 
 //    BUILDS
 router
-.get(API_V1 + '/builds', perm.needMinLevel(perm.levels.ADMIN), buildController.getAll)
+.get(API_V1 + '/builds', perm.needLevel(perm.levels.ADMIN), buildController.getAll)
 .post(API_V1 + '/builds', buildController.create)
 .get(API_V1 + '/builds/:buildID', buildController.getOne)
 .put(API_V1 + '/builds/:buildID', buildController.update)
