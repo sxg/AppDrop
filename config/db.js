@@ -102,7 +102,6 @@ var retrieveOne = function(table, columns, values, returningColumns, cb) {
         } else {
             //    Get the object in the database
             var q = appendWhere(table.select(returningColumns).from(table), columns, values);
-            console.log(q.text);
             client.query(q.text, q.values, function(err, results) {
                 done();
                 assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
@@ -139,7 +138,6 @@ var updateOne = function(table, columns, values, object, returningColumns, cb) {
             //    Try/catch catches errors thrown in forming the SQL query due to bad input
             try {
                 var q = appendWhere(table.update(object).returning(returningColumns), columns, values);
-                console.log(q.text);
                 client.query(q.text, q.values, function(err, results) {
                     done();
                     assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
@@ -176,7 +174,6 @@ var destroyOne = function(table, columns, values, returningColumns, cb) {
         } else {
             //    Destroy the matching objects in the database
             var q = appendWhere(table.delete().from(table).returning(returningColumns), columns, values);
-            console.log(q.text);
             client.query(q.text, q.values, function(err, results) {
                 done();
                 assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
