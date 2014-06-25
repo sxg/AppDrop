@@ -8,6 +8,13 @@ var invalidPermissionError = function() {
     return err;
 };
 
+var invalidOwnershipError = function() {
+    var err = new Error();
+    err.name = 'ForbiddenError';
+    err.message = 'you do not own the account associated with this request';
+    return err;
+};
+
 
 //===============
 //    Middleware
@@ -30,10 +37,7 @@ var needToOwnAccount = function() {
         var accountID = req.account.account_id;
         var requestedAccountID = parseInt(req.params.account_id);
         if (accountID !== requestedAccountID) {
-            var err = new Error();
-            err.name = 'ForbiddenError';
-            err.message = 'you do not own the account associated with this request';
-            res.send(403, JSON.stringify(err, ['name', 'message']));
+            res.send(403, JSON.stringify(invalidOwnershipError(), ['name', 'message']));
         } else {
             next();
         }
