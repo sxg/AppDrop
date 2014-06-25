@@ -35,18 +35,17 @@ var getAllAccounts = function(cb) {
 };
 
 //    cb(err, account)
-var getAccount = function(account_id, cb) {
-    db.retrieveOne(db.account, [db.account.account_id], [account_id], PUBLIC_FIELDS, cb);
+var getAccount = function(accountID, cb) {
+    db.retrieveOne(db.account, [db.account.account_id], [accountID], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, account)
-var updateAccount = function(account_id, account, cb) {
+var updateAccount = function(accountID, account, cb) {
     var update = function() {
-        db.updateOne(db.account, [db.account.account_id], [account_id], account, PUBLIC_FIELDS, cb);
+        db.updateOne(db.account, [db.account.account_id], [accountID], account, PUBLIC_FIELDS, cb);
     };
 
     if (account.password) {
-
         //    Hash the password
         bcrypt.hash(account.password, HASH_ROUNDS, function(err, hash) {
             if (err) cb(err);
@@ -62,8 +61,8 @@ var updateAccount = function(account_id, account, cb) {
 };
 
 //    cb(err)
-var deleteAccount = function(account_id, cb) {
-    db.destroyOne(db.account, [db.account.account_id], [account_id], PUBLIC_FIELDS, cb);
+var deleteAccount = function(accountID, cb) {
+    db.destroyOne(db.account, [db.account.account_id], [accountID], PUBLIC_FIELDS, cb);
 };
 
 //===================

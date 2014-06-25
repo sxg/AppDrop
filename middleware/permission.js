@@ -35,7 +35,7 @@ var needMinLevel = function(requiredPermissionLevel) {
 var needToOwnAccount = function() {
     return function(req, res, next) {
         var accountID = req.account.account_id;
-        var requestedAccountID = parseInt(req.params.account_id);
+        var requestedAccountID = parseInt(req.params.accountID);
         if (accountID !== requestedAccountID) {
             res.send(403, JSON.stringify(invalidOwnershipError(), ['name', 'message']));
         } else {

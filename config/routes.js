@@ -5,42 +5,46 @@ var accountController = require('../app/controllers/account');
 var buildController = require('../app/controllers/build');
 var authController = require('../app/controllers/authentication');
 var perm = require('../middleware/permission');
+var auth = require('../middleware/authentication');
 
 //    Constants
 var API_V1 = '/api/v1';
 
 //    Setup
 var router = express.Router();
+router.use(API_V1, auth());
 
 
 //===========
 //    Routes
 //===========
 
-//    Log In
+//    LOG IN
 router
 .post('/login', authController.login);
 
 //    ACCOUNTS
-router.route(API_V1)
-.get('/accounts', perm.needMinLevel(perm.levels.ADMIN), accountController.getAll)
-.post('/accounts', accountController.create)
-.get('/accounts/:accountID', perm.needToOwnAccount(), accountController.getOne)
-.put('/accounts/:accountID', perm.needToOwnAccount(), accountController.update)
-.delete('/accounts/:accountID', perm.needToOwnAccount(), accountController.destroy);
+router
+.get(API_V1 + '/accounts', perm.needMinLevel(perm.levels.ADMIN), accountController.getAll)
+.post(API_V1 + '/accounts', accountController.create)
+.get(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.getOne)
+.put(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.update)
+.delete(API_V1 + '/accounts/:accountID', perm.needToOwnAccount(), accountController.destroy);
 
 //    APPS
-router.route(API_V1)
-.get('/apps', perm.needMinLevel(perm.levels.ADMIN), appController.getAll)
-.post('/apps', appController.create)
-.get('/apps/:appID', appController.getOne)
-.put('/apps/:appID', appController.update)
-.delete('/apps/:appID', appController.destroy);
+router
+.get(API_V1 + '/apps', perm.needMinLevel(perm.levels.ADMIN), appController.getAll)
+.post(API_V1 + '/apps', appController.create)
+.get(API_V1 + '/apps/:appID', appController.getOne)
+.put(API_V1 + '/apps/:appID', appController.update)
+.delete(API_V1 + '/apps/:appID', appController.destroy);
 
 //    BUILDS
-router.route(API_V1)
-.get('/builds', perm.needMinLevel(perm.levels.ADMIN), buildController.getAll)
-.post('/builds', buildController.create)
-.get('/builds/:buildID', buildController.getOne)
-.put('/builds/:buildID', buildController.update)
-.delete('/builds/:buildID', buildController.destroy);
+router
+.get(API_V1 + '/builds', perm.needMinLevel(perm.levels.ADMIN), buildController.getAll)
+.post(API_V1 + '/builds', buildController.create)
+.get(API_V1 + '/builds/:buildID', buildController.getOne)
+.put(API_V1 + '/builds/:buildID', buildController.update)
+.delete(API_V1 + '/builds/:buildID', buildController.destroy);
+
+module.exports = router;
