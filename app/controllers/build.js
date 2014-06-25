@@ -1,6 +1,11 @@
 //    Dependencies
 var express = require('express');
 var build = require('../models/build');
+var perm = require('../../middleware/permission');
+
+//    Constants
+var GENERAL_ROUTE = '/builds';
+var SPECIFIC_ROUTE = '/builds/:build_id';
 
 //    Setup
 var buildsRouter = express.Router();
@@ -20,8 +25,9 @@ var respond = function(err, builds, res) {
 };
 
 //    /builds
-buildsRouter.route('/builds')
-.get(function(req, res) {
+buildsRouter
+.route(GENERAL_ROUTE)
+.get(perm.needMinLevel(perm.levels.ADMIN), function(req, res) {
     build.getAllBuilds(function(err, builds) {
         respond(err, builds, res);
     });
@@ -33,7 +39,9 @@ buildsRouter.route('/builds')
 });
 
 //    /builds/:build_id
-buildsRouter.route('/builds/:build_id')
+buildsRouter
+.use(SPECIFIC_ROUTE, perm.needToOwnAccount())
+.route(SPECIFIC_ROUTE)
 .get(function(req, res) {
     build.getBuild(req.params.build_id, function(err, build) {
         respond(err, build, res);

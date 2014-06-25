@@ -11,7 +11,8 @@ var authRouter = express.Router();
 //===========
 
 //    /login
-authRouter.route('/login')
+authRouter
+.route('/login')
 .post(function(req, res) {
     auth.getToken(req.body.email, req.body.password, function(err, token) {
         if (err) {

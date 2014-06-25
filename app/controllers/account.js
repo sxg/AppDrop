@@ -25,7 +25,8 @@ var respond = function(err, accounts, res) {
 };
 
 //    /accounts
-accountsRouter.route(GENERAL_ROUTE)
+accountsRouter
+.route(GENERAL_ROUTE)
 .get(perm.needMinLevel(perm.levels.ADMIN), function(req, res) {
     account.getAllAccounts(function(err, accounts) {
         respond(err, accounts, res);
