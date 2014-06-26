@@ -15,22 +15,22 @@ var createApp = function(app, cb) {
 
 //    cb(err, apps)
 var getAllApps = function(cb) {
-    db.retrieveAll(db.app, PUBLIC_FIELDS, cb);
+    db.getAll(db.app, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, app)
 var getApp = function(appID, cb) {
-    db.retrieveOne(db.app, [db.app.app_id], [appID], PUBLIC_FIELDS, cb);
+    db.getOne(db.app, [db.app.app_id], [appID], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, app)
 var updateApp = function(appID, app, cb) {
-    db.updateOne(db.app, [db.app.app_id], [appID], app, PUBLIC_FIELDS, cb);
+    db.update(db.app, [db.app.app_id], [appID], app, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err)
 var deleteApp = function(appID, cb) {
-    db.destroyOne(db.app, [db.app.app_id], [appID], PUBLIC_FIELDS, cb);
+    db.destroy(db.app, [db.app.app_id], [appID], PUBLIC_FIELDS, cb);
 };
 
 //    Public

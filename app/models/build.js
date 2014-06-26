@@ -23,19 +23,19 @@ var createBuild = function(build, cb) {
 };
 
 var getAllBuilds = function(cb) {
-    db.retrieveAll(db.build, PUBLIC_FIELDS, cb);
+    db.getAll(db.build, PUBLIC_FIELDS, cb);
 };
 
 var getBuild = function(buildID, cb) {
-    db.retrieveOne(db.build, [db.build.build_id], [buildID], PUBLIC_FIELDS, cb);
+    db.getOne(db.build, [db.build.build_id], [buildID], PUBLIC_FIELDS, cb);
 };
 
 var updateBuild = function(buildID, build, cb) {
-    db.updateOne(db.build, [db.build.build_id], [buildID], build, PUBLIC_FIELDS, cb);
+    db.update(db.build, [db.build.build_id], [buildID], build, PUBLIC_FIELDS, cb);
 };
 
 var deleteBuild = function(buildID, cb) {
-    db.destroyOne(db.build, [db.build.build_id], [buildID], PUBLIC_FIELDS, cb);
+    db.destroy(db.build, [db.build.build_id], [buildID], PUBLIC_FIELDS, cb);
 };
 
 //    Public

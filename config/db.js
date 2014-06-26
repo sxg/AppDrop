@@ -60,7 +60,7 @@ var create = function(table, object, returningColumns, cb) {
     });
 };
 
-var retrieveAll = function(table, returningColumns, cb) {
+var getAll = function(table, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
     assert.ok(returningColumns instanceof Array, 'returningColumns must be an array');
@@ -88,7 +88,7 @@ var retrieveAll = function(table, returningColumns, cb) {
     });
 };
 
-var retrieveOne = function(table, columns, values, returningColumns, cb) {
+var getOne = function(table, columns, values, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
     assert.ok(columns instanceof Array, 'columns must be an array');
@@ -121,7 +121,7 @@ var retrieveOne = function(table, columns, values, returningColumns, cb) {
     });
 };
 
-var updateOne = function(table, columns, values, object, returningColumns, cb) {
+var update = function(table, columns, values, object, returningColumns, cb) {
     //    Check parameters
     assert.ok(table, 'table must be non null');
     assert.ok(columns instanceof Array, 'columns must be an array');
@@ -161,7 +161,7 @@ var updateOne = function(table, columns, values, object, returningColumns, cb) {
     });
 };
 
-var destroyOne = function(table, columns, values, returningColumns, cb) {
+var destroy = function(table, columns, values, returningColumns, cb) {
     //    Check paramters
     assert.ok(table, 'table must be non null');
     assert.ok(columns instanceof Array, 'columns must be an array');
@@ -248,9 +248,9 @@ module.exports = {
     build: build,
     account: account,
     create: create,
-    updateOne: updateOne,
-    retrieveAll: retrieveAll,
-    retrieveOne: retrieveOne,
-    destroyOne: destroyOne,
+    update: update,
+    getAll: getAll,
+    getOne: getOne,
+    destroy: destroy,
     randomMD5Hash: randomMD5Hash
 };
