@@ -19,9 +19,10 @@ router.use(API_V1, auth());
 //    Routes
 //===========
 
-//    LOG IN
+//    LOG IN / SIGN UP
 router
-.post('/login', authController.login);
+.post('/login', authController.login)
+.post('/signup', accountController.create);
 
 //    ACCOUNTS
 router
