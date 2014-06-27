@@ -28,19 +28,19 @@ var getAll = function(req, res) {
 };
 
 var getOne = function(req, res) {
-    build.getBuild(req.params.buildID, function(err, build) {
+    build.getBuild(req.account.account_id, req.params.buildID, function(err, build) {
         respond(err, build, res);
     });
 };
 
 var update = function(req, res) {
-    build.updateBuild(req.params.buildID, req.body, function(err, build) {
+    build.updateBuild(req.account.account_id, req.params.buildID, req.body, function(err, build) {
         respond(err, build, res);
     });
 };
 
 var destroy = function(req, res) {
-    build.deleteBuild(req.params.buildID, function(err, build) {
+    build.deleteBuild(req.account.account_id, req.params.buildID, function(err, build) {
         respond(err, build, res);
     });
 };

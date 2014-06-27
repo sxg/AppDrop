@@ -27,9 +27,9 @@ router
 router
 .get(API_V1 + '/accounts', perm.needLevel(perm.levels.ADMIN), accountController.getAll)
 .post(API_V1 + '/accounts', accountController.create)
-.get(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.getOne)
-.put(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.update)
-.delete(API_V1 + '/accounts/:accountID', perm.needOwnership(), accountController.destroy);
+.get(API_V1 + '/accounts/:accountID', accountController.getOne)
+.put(API_V1 + '/accounts/:accountID', accountController.update)
+.delete(API_V1 + '/accounts/:accountID', accountController.destroy);
 
 //    APPS
 router
