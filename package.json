@@ -1,5 +1,5 @@
 {
-  "name": "Smuggle",
+  "name": "AppDrop",
   "version": "0.1.0",
   "description": "Wireless iOS App Distribution",
   "main": "app.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sghodas/Smuggle.git"
+    "url": "git://github.com/sghodas/AppDrop.git"
   },
   "keywords": [
     "ios",
@@ -23,9 +23,9 @@
   "author": "Satyam Ghodasara <sghodas@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sghodas/Smuggle/issues"
+    "url": "https://github.com/sghodas/AppDrop/issues"
   },
-  "homepage": "https://github.com/sghodas/Smuggle",
+  "homepage": "https://github.com/sghodas/AppDrop",
   "dependencies": {
     "aws-sdk": "^2.0.1",
     "bcrypt": "^0.7.8",
