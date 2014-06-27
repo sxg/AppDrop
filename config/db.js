@@ -4,7 +4,7 @@ var pg = require('pg');
 var sql = require('sql');
 
 //    Constants
-var DATABASE_URL = process.env.NODE_ENV === 'test' ? 'postgres://appdrop:@localhost:5432/appdroptestdb' : process.env.DATABASE_URL;
+var DATABASE_URL = process.env.DATABASE_URL;
 var LIMIT = 1000;
 
 //    Tables
