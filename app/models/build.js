@@ -26,16 +26,16 @@ var getAllBuilds = function(cb) {
     db.getAll(db.build, PUBLIC_FIELDS, cb);
 };
 
-var getBuild = function(ownerAccountID, buildID, cb) {
-    db.getOne(db.build, [db.build.account_id, db.build.build_id], [ownerAccountID, buildID], PUBLIC_FIELDS, cb);
+var getBuild = function(requestingAccount, buildID, cb) {
+    db.getOne(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], PUBLIC_FIELDS, cb);
 };
 
-var updateBuild = function(ownerAccountID, buildID, build, cb) {
-    db.update(db.build, [db.build.account_id, db.build.build_id], [ownerAccountID, buildID], build, PUBLIC_FIELDS, cb);
+var updateBuild = function(requestingAccount, buildID, build, cb) {
+    db.update(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], build, PUBLIC_FIELDS, cb);
 };
 
-var deleteBuild = function(ownerAccountID, buildID, cb) {
-    db.destroy(db.build, [db.build.account_id, db.build.build_id], [ownerAccountID, buildID], PUBLIC_FIELDS, cb);
+var deleteBuild = function(requestingAccount, buildID, cb) {
+    db.destroy(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], PUBLIC_FIELDS, cb);
 };
 
 //    Public

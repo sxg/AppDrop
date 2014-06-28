@@ -19,18 +19,18 @@ var getAllApps = function(cb) {
 };
 
 //    cb(err, app)
-var getApp = function(ownerAccountID, appID, cb) {
-    db.getOne(db.app, [db.app.account_id, db.app.app_id], [ownerAccountID, appID], PUBLIC_FIELDS, cb);
+var getApp = function(requestingAccount, appID, cb) {
+    db.getOne(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, app)
-var updateApp = function(ownerAccountID, appID, app, cb) {
-    db.update(db.app, [db.app.account_id, db.app.app_id], [ownerAccountID, appID], app, PUBLIC_FIELDS, cb);
+var updateApp = function(requestingAccount, appID, app, cb) {
+    db.update(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], app, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err)
-var deleteApp = function(ownerAccountID, appID, cb) {
-    db.destroy(db.app, [db.app.account_id, db.app.app_id], [ownerAccountID, appID], PUBLIC_FIELDS, cb);
+var deleteApp = function(requestingAccount, appID, cb) {
+    db.destroy(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], PUBLIC_FIELDS, cb);
 };
 
 //    Public

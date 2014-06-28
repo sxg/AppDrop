@@ -29,19 +29,19 @@ var getAll = function(req, res) {
 };
 
 var getOne = function(req ,res) {
-    account.getAccount(req.account.account_id, req.params.accountID, function(err, account) {
+    account.getAccount(req.account, req.params.accountID, function(err, account) {
         respond(err, account, res);
     });
 };
 
 var update = function(req, res) {
-    account.updateAccount(req.account.account_id, req.params.accountID, req.body, function(err, account) {
+    account.updateAccount(req.account, req.params.accountID, req.body, function(err, account) {
         respond(err, account, res);
     });
 };
 
 var destroy = function(req, res) {
-    account.deleteAccount(req.account.account_id, req.params.accountID, function(err, account) {
+    account.deleteAccount(req.account, req.params.accountID, function(err, account) {
         respond(err, account, res);
     });
 };

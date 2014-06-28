@@ -35,14 +35,14 @@ var getAllAccounts = function(cb) {
 };
 
 //    cb(err, account)
-var getAccount = function(ownerAccountID, accountID, cb) {
-    db.getOne(db.account, [db.account.account_id, db.account.account_id], [ownerAccountID, accountID], PUBLIC_FIELDS, cb);
+var getAccount = function(requestingAccount, accountID, cb) {
+    db.getOne(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, account)
-var updateAccount = function(ownerAccountID, accountID, account, cb) {
+var updateAccount = function(requestingAccount, accountID, account, cb) {
     var update = function() {
-        db.update(db.account, [db.account.account_id, db.account.account_id], [ownerAccountID, accountID], account, PUBLIC_FIELDS, cb);
+        db.update(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], account, PUBLIC_FIELDS, cb);
     };
 
     if (account.password) {
@@ -61,8 +61,8 @@ var updateAccount = function(ownerAccountID, accountID, account, cb) {
 };
 
 //    cb(err)
-var deleteAccount = function(ownerAccountID, accountID, cb) {
-    db.destroy(db.account, [db.account.account_id, db.account.account_id], [ownerAccountID, accountID], PUBLIC_FIELDS, cb);
+var deleteAccount = function(requestingAccount, accountID, cb) {
+    db.destroy(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], PUBLIC_FIELDS, cb);
 };
 
 //===================
