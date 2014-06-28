@@ -96,13 +96,14 @@ describe('Account', function() {
         });
     });
 
+    var body = {
+        email: 'test@test.com',
+        name: 'test',
+        password: 'test'
+    };
+    var accountID;
+
     describe('Create one', function() {
-        var body = {
-            email: 'test@test.com',
-            name: 'test',
-            password: 'test'
-        };
-        var accountID;
 
         afterEach(function(done) {
             if (accountID) {
@@ -158,13 +159,90 @@ describe('Account', function() {
                    .end(function(err, res) {
                        if (err) throw err;
                        accountID = res.body.account_id;
+                       request.post('/signup')
+                              .send(body)
+                              .expect(409)
+                              .end(function(err, res) {
+                                  if (err) throw err;
+                                  done(err);
+                              });
                    });
+        });
+    });
+
+    describe('Update one', function() {
+        beforeEach(function(done) {
             request.post('/signup')
                    .send(body)
-                   .expect(409)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = res.body.account_id;
+                       done();
+                   });
+        });
+
+        afterEach(function(done) {
+            request.delete('/api/v1/accounts/' + accountID)
+                   .set(adminHeaders)
+                   .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
                        done(err);
+                   });
+        });
+
+        it('should get 403 error if unauthenticated', function(done) {
+            request.put('/api/v1/accounts/' + accountID)
+                   .send({name: 'updated'})
+                   .expect(403)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get a 404 error if you do not own the account', function(done) {
+            request.put('/api/v1/accounts/' + accountID)
+                   .set(userHeaders)
+                   .send({name: 'updated'})
+                   .expect(404)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get a 403 error if you try to update an invalid field', function(done) {
+            request.put('/api/v1/accounts/' + accountID)
+                   .set(adminHeaders)
+                   .send({account_id: 5})
+                   .expect(403)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get 200 success and change a field if you are an admin', function(done) {
+            request.put('/api/v1/accounts/' + accountID)
+                   .set(adminHeaders)
+                   .send({name: 'updated'})
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       request.get('/api/v1/accounts/' + accountID)
+                              .set(adminHeaders)
+                              .expect(200)
+                              .expect(function(res) {
+                                  if (res.body.name !== 'updated') {
+                                      throw new Error('Failed to update data');
+                                  }
+                              })
+                              .end(function(err, res) {
+                                  if (err) throw err;
+                                  done(err);
+                              });
                    });
         });
     });
