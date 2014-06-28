@@ -20,6 +20,13 @@ request = request('http://localhost:5100');
 //    Account tests
 //==================
 
+var body = {
+    email: 'test@test.com',
+    name: 'test',
+    password: 'test'
+};
+var accountID;
+
 describe('Account', function() {
     describe('Get all', function() {
         it('should get a 403 error when unauthenticated', function(done) {
@@ -95,13 +102,6 @@ describe('Account', function() {
                    });
         });
     });
-
-    var body = {
-        email: 'test@test.com',
-        name: 'test',
-        password: 'test'
-    };
-    var accountID;
 
     describe('Create one', function() {
 
@@ -243,6 +243,63 @@ describe('Account', function() {
                                   if (err) throw err;
                                   done(err);
                               });
+                   });
+        });
+    });
+
+    describe('Delete one', function() {
+        beforeEach(function(done) {
+            request.post('/signup')
+                   .send(body)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = res.body.account_id;
+                       done();
+                   });
+        });
+
+        afterEach(function(done) {
+            if (accountID) {
+                request.delete('/api/v1/accounts/' + accountID)
+                       .set(adminHeaders)
+                       .expect(200)
+                       .end(function(err, res) {
+                           if (err) throw err;
+                           done(err);
+                       });
+            } else {
+                done();
+            }
+        });
+
+        it('should get a 403 error if unauthenticated', function(done) {
+            request.delete('/api/v1/accounts/' + accountID)
+                   .expect(403)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get a 404 error if you do not own the account', function(done) {
+            request.delete('/api/v1/accounts/' + accountID)
+                   .set(userHeaders)
+                   .expect(404)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get 200 success if you are an admin user', function(done) {
+            request.delete('/api/v1/accounts/' + accountID)
+                   .set(adminHeaders)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = null;
+                       done(err);
                    });
         });
     });
