@@ -20,17 +20,35 @@ var getAllApps = function(cb) {
 
 //    cb(err, app)
 var getApp = function(requestingAccount, appID, cb) {
-    db.getOne(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], PUBLIC_FIELDS, cb);
+    var cols = [db.app.app_id];
+    var vals = [appID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.app.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.getOne(db.app, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, app)
 var updateApp = function(requestingAccount, appID, app, cb) {
-    db.update(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], app, PUBLIC_FIELDS, cb);
+    var cols = [db.app.app_id];
+    var vals = [appID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.app.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.update(db.app, cols, vals, app, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err)
 var deleteApp = function(requestingAccount, appID, cb) {
-    db.destroy(db.app, [db.app.account_id, db.app.app_id], [requestingAccount.account_id, appID], PUBLIC_FIELDS, cb);
+    var cols = [db.app.app_id];
+    var vals = [appID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.app.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.destroy(db.app, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 //    Public

@@ -36,13 +36,25 @@ var getAllAccounts = function(cb) {
 
 //    cb(err, account)
 var getAccount = function(requestingAccount, accountID, cb) {
-    db.getOne(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], PUBLIC_FIELDS, cb);
+    var cols = [db.account.account_id];
+    var vals = [accountID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.account.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.getOne(db.account, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 //    cb(err, account)
 var updateAccount = function(requestingAccount, accountID, account, cb) {
     var update = function() {
-        db.update(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], account, PUBLIC_FIELDS, cb);
+        var cols = [db.account.account_id];
+        var vals = [accountID];
+        if (requestingAccount.permission === 'user') {
+            cols.push(db.account.account_id);
+            vals.push(requestingAccount.account_id);
+        }
+        db.update(db.account, cols, vals, account, PUBLIC_FIELDS, cb);
     };
 
     if (account.password) {
@@ -62,7 +74,13 @@ var updateAccount = function(requestingAccount, accountID, account, cb) {
 
 //    cb(err)
 var deleteAccount = function(requestingAccount, accountID, cb) {
-    db.destroy(db.account, [db.account.account_id, db.account.account_id], [requestingAccount.account_id, accountID], PUBLIC_FIELDS, cb);
+    var cols = [db.account.account_id];
+    var vals = [accountID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.account.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.destroy(db.account, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 //===================

@@ -27,15 +27,33 @@ var getAllBuilds = function(cb) {
 };
 
 var getBuild = function(requestingAccount, buildID, cb) {
-    db.getOne(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], PUBLIC_FIELDS, cb);
+    var cols = [db.build.build_id];
+    var vals = [buildID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.build.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.getOne(db.build, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 var updateBuild = function(requestingAccount, buildID, build, cb) {
-    db.update(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], build, PUBLIC_FIELDS, cb);
+    var cols = [db.build.build_id];
+    var vals = [buildID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.build.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.update(db.build, cols, vals, build, PUBLIC_FIELDS, cb);
 };
 
 var deleteBuild = function(requestingAccount, buildID, cb) {
-    db.destroy(db.build, [db.build.account_id, db.build.build_id], [requestingAccount.account_id, buildID], PUBLIC_FIELDS, cb);
+    var cols = [db.build.build_id];
+    var vals = [buildID];
+    if (requestingAccount.permission === 'user') {
+        cols.push(db.build.account_id);
+        vals.push(requestingAccount.account_id);
+    }
+    db.destroy(db.build, cols, vals, PUBLIC_FIELDS, cb);
 };
 
 //    Public

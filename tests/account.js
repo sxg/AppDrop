@@ -1,5 +1,6 @@
 //    Dependencies
 var request = require('supertest');
+var db = require('../config/db');
 
 //    Constants
 var userHeaders = {
@@ -20,7 +21,7 @@ request = request('http://localhost:5100');
 //==================
 
 describe('Account', function() {
-    describe('GET all', function() {
+    describe('Get all', function() {
         it('should get a 403 error when unauthenticated', function(done) {
             request.get('/api/v1/accounts')
                    .expect(403)
@@ -49,6 +50,83 @@ describe('Account', function() {
                    })
                    .end(function(err, res) {
                        if (err) throw err;
+                       done(err);
+                   });
+        });
+    });
+
+    describe('Get one', function() {
+        it('should get a 403 error when unauthenticated', function(done) {
+            request.get('/api/v1/accounts/35')
+                   .expect(403)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get a 404 error when accessing an unowned account', function(done) {
+            request.get('/api/v1/accounts/35')
+                   .set(userHeaders)
+                   .expect(404)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get 200 success when accessing your own account', function(done) {
+            request.get('/api/v1/accounts/35')
+                   .set(adminHeaders)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+    });
+
+    describe('Create one', function() {
+        var body = {
+            email: 'test@test.com',
+            name: 'test',
+            password: 'test'
+        };
+        var accountID;
+
+        afterEach(function(done) {
+            if (accountID) {
+                request.delete('/api/v1/accounts/' + accountID)
+                       .set(adminHeaders)
+                       .expect(200)
+                       .end(function(err, res) {
+                           if (err) throw err;
+                           done(err);
+                       });
+            } else {
+                done();
+            }
+        });
+
+        it('should get a 403 error when unauthenticated', function(done) {
+            request.post('/api/v1/accounts')
+                   .send(body)
+                   .expect(403)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+//    TODO: need to deal with admin privileges deleting accounts
+        it('should get 200 success when authenticated with proper body', function(done) {
+            request.post('/api/v1/accounts')
+                   .set(userHeaders)
+                   .send(body)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = res.body.account_id;
                        done(err);
                    });
         });
