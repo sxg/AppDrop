@@ -57,7 +57,7 @@ describe('Account', function() {
 
     describe('Get one', function() {
         it('should get a 403 error when unauthenticated', function(done) {
-            request.get('/api/v1/accounts/35')
+            request.get('/api/v1/accounts/32')
                    .expect(403)
                    .end(function(err, res) {
                        if (err) throw err;
@@ -66,7 +66,7 @@ describe('Account', function() {
         });
 
         it('should get a 404 error when accessing an unowned account', function(done) {
-            request.get('/api/v1/accounts/35')
+            request.get('/api/v1/accounts/33')
                    .set(userHeaders)
                    .expect(404)
                    .end(function(err, res) {
@@ -76,7 +76,17 @@ describe('Account', function() {
         });
 
         it('should get 200 success when accessing your own account', function(done) {
-            request.get('/api/v1/accounts/35')
+            request.get('/api/v1/accounts/32')
+                   .set(userHeaders)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       done(err);
+                   });
+        });
+
+        it('should get 200 success when accessing an account as admin', function(done) {
+            request.get('/api/v1/accounts/32')
                    .set(adminHeaders)
                    .expect(200)
                    .end(function(err, res) {
@@ -118,7 +128,6 @@ describe('Account', function() {
                    });
         });
 
-//    TODO: need to deal with admin privileges deleting accounts
         it('should get 200 success when authenticated with proper body', function(done) {
             request.post('/api/v1/accounts')
                    .set(userHeaders)
@@ -127,6 +136,34 @@ describe('Account', function() {
                    .end(function(err, res) {
                        if (err) throw err;
                        accountID = res.body.account_id;
+                       done(err);
+                   });
+        });
+
+        it('should get 200 success when unauthenticated and using the /signup endpoint', function(done) {
+            request.post('/signup')
+                   .send(body)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = res.body.account_id;
+                       done(err);
+                   });
+        });
+
+        it('should get a 409 error when creating an account with an existing email', function(done) {
+            request.post('/signup')
+                   .send(body)
+                   .expect(200)
+                   .end(function(err, res) {
+                       if (err) throw err;
+                       accountID = res.body.account_id;
+                   });
+            request.post('/signup')
+                   .send(body)
+                   .expect(409)
+                   .end(function(err, res) {
+                       if (err) throw err;
                        done(err);
                    });
         });
