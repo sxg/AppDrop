@@ -3,8 +3,7 @@ var assert = require('assert');
 var pg = require('pg');
 var sql = require('sql');
 
-//    Constants
-var DATABASE_URL = process.env.DATABASE_URL;
+//    Constants;
 var LIMIT = 1000;
 
 //    Tables
@@ -101,7 +100,7 @@ var getOne = function(table, columns, values, returningColumns, cb) {
             cb(err);
         } else {
             //    Get the object in the database
-            var q = appendWhere(table.select(returningColumns).from(table), columns, values);
+            var q = appendWhere(table.select(returningColumns).from(table), columns, values).toQuery();
             client.query(q.text, q.values, function(err, results) {
                 done();
                 assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
@@ -137,7 +136,7 @@ var update = function(table, columns, values, object, returningColumns, cb) {
             //    Update the object in the database
             //    Try/catch catches errors thrown in forming the SQL query due to bad input
             try {
-                var q = appendWhere(table.update(object).returning(returningColumns), columns, values);
+                var q = appendWhere(table.update(object), columns, values).returning(returningColumns).toQuery();
                 client.query(q.text, q.values, function(err, results) {
                     done();
                     assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
@@ -173,7 +172,7 @@ var destroy = function(table, columns, values, returningColumns, cb) {
             cb(err);
         } else {
             //    Destroy the matching objects in the database
-            var q = appendWhere(table.delete().from(table).returning(returningColumns), columns, values);
+            var q = appendWhere(table.delete().from(table), columns, values).returning(returningColumns).toQuery();
             client.query(q.text, q.values, function(err, results) {
                 done();
                 assert.ok(results === undefined || results.rows.length <= 1, 'no more than one row should be found for ' + columns + ' == ' + values);
@@ -203,7 +202,7 @@ var appendWhere = function(q, columns, values) {
     for (var i = 0; i < columns.length; i++) {
         q.where(columns[i].equals(values[i]));
     }
-    return q.toQuery();
+    return q;
 };
 
 var randomMD5Hash = function() {
@@ -213,7 +212,7 @@ var randomMD5Hash = function() {
 };
 
 var getClient = function(cb) {
-    pg.connect(DATABASE_URL, function(err, client, done) {
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         if (err) {
             err.name = 'GatewayTimeoutError';
             err.httpStatusCode = 504;
