@@ -16,21 +16,20 @@ var adminHeaders = {
 request = request('http://localhost:5100');
 
 
-//==================
-//    Account Tests
-//==================
+//==============
+//    App Tests
+//==============
 
 var body = {
-    email: 'test@test.com',
-    name: 'test',
-    password: 'test'
+    bundle_id: 'com.test.test',
+    name: 'Test'
 };
-var accountID;
+var appID;
 
-describe('Account', function() {
+describe('App', function() {
     describe('Get all', function() {
         it('should get a 403 error when unauthenticated', function(done) {
-            request.get('/api/v1/accounts')
+            request.get('/api/v1/apps')
                    .expect(403)
                    .end(function(err, res) {
                        if (err) throw err;
@@ -39,7 +38,7 @@ describe('Account', function() {
         });
 
         it('should get a 403 error when authenticated as a non-admin user', function(done) {
-            request.get('/api/v1/accounts')
+            request.get('/api/v1/apps')
                    .set(userHeaders)
                    .expect(403)
                    .end(function(err, res) {
@@ -49,11 +48,11 @@ describe('Account', function() {
         });
 
         it('should get 200 success when authenticated as an admin user', function(done) {
-            request.get('/api/v1/accounts')
+            request.get('/api/v1/apps')
                    .set(adminHeaders)
                    .expect(200)
                    .expect(function(res) {
-                       if (res.body.length !== 3) throw new Error('Missing/wrong data');
+                       if (res.body.length !== 2) throw new Error('Missing/wrong data');
                    })
                    .end(function(err, res) {
                        if (err) throw err;
@@ -64,7 +63,7 @@ describe('Account', function() {
 
     describe('Get one', function() {
         it('should get a 403 error when unauthenticated', function(done) {
-            request.get('/api/v1/accounts/32')
+            request.get('/api/v1/apps/24')
                    .expect(403)
                    .end(function(err, res) {
                        if (err) throw err;
@@ -72,8 +71,8 @@ describe('Account', function() {
                    });
         });
 
-        it('should get a 404 error when accessing an unowned account', function(done) {
-            request.get('/api/v1/accounts/33')
+        it('should get a 404 error when accessing an unowned app', function(done) {
+            request.get('/api/v1/apps/25')
                    .set(userHeaders)
                    .expect(404)
                    .end(function(err, res) {
@@ -82,8 +81,8 @@ describe('Account', function() {
                    });
         });
 
-        it('should get 200 success when accessing your own account', function(done) {
-            request.get('/api/v1/accounts/32')
+        it('should get 200 success when accessing your own app', function(done) {
+            request.get('/api/v1/apps/24')
                    .set(userHeaders)
                    .expect(200)
                    .end(function(err, res) {
@@ -92,8 +91,8 @@ describe('Account', function() {
                    });
         });
 
-        it('should get 200 success when accessing an account as admin', function(done) {
-            request.get('/api/v1/accounts/32')
+        it('should get 200 success when accessing an app as admin', function(done) {
+            request.get('/api/v1/apps/24')
                    .set(adminHeaders)
                    .expect(200)
                    .end(function(err, res) {
@@ -106,8 +105,8 @@ describe('Account', function() {
     describe('Create one', function() {
 
         afterEach(function(done) {
-            if (accountID) {
-                request.delete('/api/v1/accounts/' + accountID)
+            if (appID) {
+                request.delete('/api/v1/apps/' + appID)
                        .set(adminHeaders)
                        .expect(200)
                        .end(function(err, res) {
@@ -120,7 +119,7 @@ describe('Account', function() {
         });
 
         it('should get a 403 error when unauthenticated', function(done) {
-            request.post('/api/v1/accounts')
+            request.post('/api/v1/apps')
                    .send(body)
                    .expect(403)
                    .end(function(err, res) {
@@ -130,36 +129,27 @@ describe('Account', function() {
         });
 
         it('should get 200 success when authenticated with proper body', function(done) {
-            request.post('/api/v1/accounts')
+            request.post('/api/v1/apps')
                    .set(userHeaders)
                    .send(body)
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       accountID = res.body.account_id;
+                       appID = res.body.app_id;
                        done(err);
                    });
         });
 
-        it('should get 200 success when unauthenticated and using the /signup endpoint', function(done) {
-            request.post('/signup')
+        it('should get a 409 error when creating an app with an existing bundle ID', function(done) {
+            request.post('/api/v1/apps')
+                   .set(userHeaders)
                    .send(body)
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       accountID = res.body.account_id;
-                       done(err);
-                   });
-        });
-
-        it('should get a 409 error when creating an account with an existing email', function(done) {
-            request.post('/signup')
-                   .send(body)
-                   .expect(200)
-                   .end(function(err, res) {
-                       if (err) throw err;
-                       accountID = res.body.account_id;
-                       request.post('/signup')
+                       appID = res.body.app_id;
+                       request.post('/api/v1/apps')
+                              .set(userHeaders)
                               .send(body)
                               .expect(409)
                               .end(function(err, res) {
@@ -172,18 +162,19 @@ describe('Account', function() {
 
     describe('Update one', function() {
         beforeEach(function(done) {
-            request.post('/signup')
+            request.post('/api/v1/apps')
+                   .set(userHeaders)
                    .send(body)
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       accountID = res.body.account_id;
+                       appID = res.body.app_id;
                        done();
                    });
         });
 
         afterEach(function(done) {
-            request.delete('/api/v1/accounts/' + accountID)
+            request.delete('/api/v1/apps/' + appID)
                    .set(adminHeaders)
                    .expect(200)
                    .end(function(err, res) {
@@ -193,7 +184,7 @@ describe('Account', function() {
         });
 
         it('should get 403 error if unauthenticated', function(done) {
-            request.put('/api/v1/accounts/' + accountID)
+            request.put('/api/v1/apps/' + appID)
                    .send({name: 'updated'})
                    .expect(403)
                    .end(function(err, res) {
@@ -202,8 +193,8 @@ describe('Account', function() {
                    });
         });
 
-        it('should get a 404 error if you do not own the account', function(done) {
-            request.put('/api/v1/accounts/' + accountID)
+        it('should get a 404 error if you do not own the app', function(done) {
+            request.put('/api/v1/apps/' + appID)
                    .set(userHeaders)
                    .send({name: 'updated'})
                    .expect(404)
@@ -214,9 +205,9 @@ describe('Account', function() {
         });
 
         it('should get a 403 error if you try to update an invalid field', function(done) {
-            request.put('/api/v1/accounts/' + accountID)
+            request.put('/api/v1/apps/' + appID)
                    .set(adminHeaders)
-                   .send({account_id: 5})
+                   .send({app_id: 5})
                    .expect(403)
                    .end(function(err, res) {
                        if (err) throw err;
@@ -225,13 +216,13 @@ describe('Account', function() {
         });
 
         it('should get 200 success and change a field if you are an admin', function(done) {
-            request.put('/api/v1/accounts/' + accountID)
+            request.put('/api/v1/apps/' + appID)
                    .set(adminHeaders)
                    .send({name: 'updated'})
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       request.get('/api/v1/accounts/' + accountID)
+                       request.get('/api/v1/apps/' + appID)
                               .set(adminHeaders)
                               .expect(200)
                               .expect(function(res) {
@@ -249,19 +240,20 @@ describe('Account', function() {
 
     describe('Delete one', function() {
         beforeEach(function(done) {
-            request.post('/signup')
+            request.post('/api/v1/apps')
+                   .set(userHeaders)
                    .send(body)
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       accountID = res.body.account_id;
+                       appID = res.body.app_id;
                        done();
                    });
         });
 
         afterEach(function(done) {
-            if (accountID) {
-                request.delete('/api/v1/accounts/' + accountID)
+            if (appID) {
+                request.delete('/api/v1/apps/' + appID)
                        .set(adminHeaders)
                        .expect(200)
                        .end(function(err, res) {
@@ -274,7 +266,7 @@ describe('Account', function() {
         });
 
         it('should get a 403 error if unauthenticated', function(done) {
-            request.delete('/api/v1/accounts/' + accountID)
+            request.delete('/api/v1/apps/' + appID)
                    .expect(403)
                    .end(function(err, res) {
                        if (err) throw err;
@@ -282,8 +274,8 @@ describe('Account', function() {
                    });
         });
 
-        it('should get a 404 error if you do not own the account', function(done) {
-            request.delete('/api/v1/accounts/' + accountID)
+        it('should get a 404 error if you do not own the app', function(done) {
+            request.delete('/api/v1/apps/' + appID)
                    .set(userHeaders)
                    .expect(404)
                    .end(function(err, res) {
@@ -293,14 +285,15 @@ describe('Account', function() {
         });
 
         it('should get 200 success if you are an admin user', function(done) {
-            request.delete('/api/v1/accounts/' + accountID)
+            request.delete('/api/v1/apps/' + appID)
                    .set(adminHeaders)
                    .expect(200)
                    .end(function(err, res) {
                        if (err) throw err;
-                       accountID = null;
+                       appID = null;
                        done(err);
                    });
         });
     });
+
 });
