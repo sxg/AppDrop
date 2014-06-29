@@ -46,7 +46,7 @@ var updateBuild = function(requestingAccount, buildID, build, cb) {
     db.update(db.build, cols, vals, build, PUBLIC_FIELDS, cb);
 };
 
-var deleteBuild = function(requestingAccount, buildID, cb) {
+var destroyBuild = function(requestingAccount, buildID, cb) {
     var cols = [db.build.build_id];
     var vals = [buildID];
     if (requestingAccount.permission === 'user') {
@@ -62,5 +62,5 @@ module.exports = {
     getAllBuilds: getAllBuilds,
     getBuild: getBuild,
     updateBuild: updateBuild,
-    deleteBuild: deleteBuild
+    destroyBuild: destroyBuild
 };

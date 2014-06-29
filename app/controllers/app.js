@@ -40,7 +40,7 @@ var update = function(req, res) {
 };
 
 var destroy = function(req, res) {
-    app.deleteApp(req.account, req.params.appID, function(err, app) {
+    app.destroyApp(req.account, req.params.appID, function(err, app) {
         respond(err, app, res);
     });
 };

@@ -41,7 +41,7 @@ var updateApp = function(requestingAccount, appID, app, cb) {
 };
 
 //    cb(err)
-var deleteApp = function(requestingAccount, appID, cb) {
+var destroyApp = function(requestingAccount, appID, cb) {
     var cols = [db.app.app_id];
     var vals = [appID];
     if (requestingAccount.permission === 'user') {
@@ -57,5 +57,5 @@ module.exports = {
     getApp: getApp,
     getAllApps: getAllApps,
     updateApp: updateApp,
-    deleteApp: deleteApp
+    destroyApp: destroyApp
 };

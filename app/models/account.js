@@ -73,7 +73,7 @@ var updateAccount = function(requestingAccount, accountID, account, cb) {
 };
 
 //    cb(err)
-var deleteAccount = function(requestingAccount, accountID, cb) {
+var destroyAccount = function(requestingAccount, accountID, cb) {
     var cols = [db.account.account_id];
     var vals = [accountID];
     if (requestingAccount.permission === 'user') {
@@ -110,6 +110,6 @@ module.exports = {
     getAllAccounts: getAllAccounts,
     getAccount: getAccount,
     updateAccount: updateAccount,
-    deleteAccount: deleteAccount,
+    destroyAccount: destroyAccount,
     updateToken: updateToken
 };

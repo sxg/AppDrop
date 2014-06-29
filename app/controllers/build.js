@@ -40,7 +40,7 @@ var update = function(req, res) {
 };
 
 var destroy = function(req, res) {
-    build.deleteBuild(req.account, req.params.buildID, function(err, build) {
+    build.destroyBuild(req.account, req.params.buildID, function(err, build) {
         respond(err, build, res);
     });
 };

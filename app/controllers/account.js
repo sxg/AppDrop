@@ -41,7 +41,7 @@ var update = function(req, res) {
 };
 
 var destroy = function(req, res) {
-    account.deleteAccount(req.account, req.params.accountID, function(err, account) {
+    account.destroyAccount(req.account, req.params.accountID, function(err, account) {
         respond(err, account, res);
     });
 };
